@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač, vlastný produkt</title>
+
+  <!-- Konfigurácia vzdialeného zdroja dát. Očakáva sa raw JSON z Gistu. -->
+  <script id="data-source" type="application/json">
+{
+  "remoteUrl":"https://raw.code.rbi.tech/gist/ISKA8605/e2b0ac8628bae0e6ec316462ede9172b/raw/2233c8de5efd6634d4f4bda5362f6d4171a12b8e/gistfile1.txt?token=AAAEOKYML7H4U7HLGKB7HUDKCRBKS",
+  "fallbackUrl":"./rb-konkurencia-data.json",
+  "timeoutMs":8000
+}
+  </script>
+  <script src="./rb-konkurencia-data.js"></script>
+
+  <style>
+    :root{
+      --rb-yellow:#FFD400; --rb-yellow-weak:#FFF4B8; --rb-black:#000;
+      --slsp:#007AC3; --slsp-rgb:0,122,195; --vub:#F36F21; --vub-rgb:243,111,33;
+      --csob:#00A3E0; --csob-rgb:0,163,224; --unicredit:#E31837; --unicredit-rgb:227,24,55;
+      --mbank:#EA1D2D; --mbank-rgb:234,29,45; --prima:#8CC63F; --prima-rgb:140,198,63;
+      --postova:#FF6F00; --postova-rgb:255,111,0; --b365:#39B54A; --b365-rgb:57,181,74;
+      --b365plus:#009688; --b365plus-rgb:0,150,136;
+
+      --g-900:#1A1A1A; --g-700:#4D4D4D; --g-400:#C9C9C9; --g-300:#E6E6E6; --g-200:#F0F0F0; --g-100:#F9F9F9;
+      --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.06);
+      --transition:160ms cubic-bezier(.2,.8,.2,1); --feature-w:260px;
+      --shell:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif; color:var(--g-900); background:#f4f1eb; line-height:1.34}
+    header{background:#fff; border-bottom:1px solid #e9e3d8}
+    .shell{width:min(calc(100% - 32px), var(--shell)); margin:0 auto}
+    .topbar{display:flex; justify-content:flex-end; gap:22px; align-items:center; padding:10px 0 8px; font-size:12px; color:#4f4a43}
+    .topbar a,.mainnav a{color:inherit; text-decoration:none}
+    .mainnav{display:flex; align-items:center; gap:28px; padding:16px 0 20px}
+    .brand{display:flex; align-items:center; gap:18px; margin-right:12px}
+    .rb-logo{display:block; width:176px; height:auto}
+    .navlinks{display:flex; gap:34px; align-items:center; font-size:14px; color:#47413a}
+    .actions{margin-left:auto; display:flex; align-items:center; gap:12px}
+    .search-btn{width:42px; height:42px; border-radius:999px; border:none; background:transparent; font-size:19px; cursor:pointer}
+
+    .hero-shell{background:#fff}
+    .hero{width:min(100%, 1368px); margin:0 auto; display:grid; grid-template-columns:1fr 1fr; min-height:322px; overflow:hidden}
+    .hero-copy{background:var(--rb-yellow); display:flex; align-items:center; justify-content:center; padding:48px 54px}
+    .hero-copy-inner{max-width:450px}
+    .hero-copy h1{margin:0 0 18px; font-size:28px; line-height:1.15; font-weight:900; color:#111}
+    .hero-copy p{margin:0 0 24px; font-size:16px; line-height:1.4; color:#1e1c18}
+    .dark-btn{display:inline-flex; align-items:center; gap:10px; min-height:40px; padding:0 18px; border:none; border-radius:12px; background:#2f3137; color:#fff; font-weight:800; cursor:pointer}
+    .dark-btn::after{content:'›'; font-size:20px; line-height:1}
+    .hero-visual{position:relative; min-height:322px; background:linear-gradient(120deg, #6a7774 0%, #8b7253 18%, #6c7b43 40%, #95b4ca 74%, #ecd49b 100%)}
+    .hero-visual::before{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.02) 40%, rgba(255,255,255,.18));}
+    .hero-visual::after{content:''; position:absolute; inset:auto 6% 10% auto; width:50%; height:58%; border-radius:32px; background:radial-gradient(circle at 50% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%), linear-gradient(180deg, rgba(50,39,29,.4), rgba(50,39,29,.18)); filter:blur(1px)}
+    .hero-arrow,.hero-arrow-small{position:absolute; width:72px; height:72px; border-right:18px solid var(--rb-yellow); border-top:18px solid var(--rb-yellow); transform:rotate(45deg); z-index:2}
+    .hero-arrow{top:20%; left:20%}
+    .hero-arrow-small{width:48px; height:48px; border-right-width:14px; border-top-width:14px; right:28%; bottom:12%}
+    .hero-ground{position:absolute; inset:auto 0 0 0; height:28%; background:linear-gradient(180deg, rgba(244,216,161,.1), rgba(228,202,127,.55))}
+    .hero-dot{display:flex; justify-content:center; padding:12px 0 18px; background:#f4f1eb}
+    .hero-dot span{width:12px; height:12px; border-radius:50%; background:#30323a}
+
+    .promo-band{background:#f4f1eb; padding:0 0 18px}
+    .promo-wrap{position:relative; margin-top:-2px; padding:40px 0 0}
+    .promo-wrap::before{content:''; position:absolute; inset:0 0 auto 0; height:132px; background:#f4f1eb; border-top-right-radius:38px}
+    .promo-grid{position:relative; z-index:1; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:22px; width:min(calc(100% - 32px), 880px); margin:0 auto}
+    .promo-card{background:#fff; border:1px solid #ebe4d8; border-radius:16px; padding:18px 16px 16px; box-shadow:0 1px 1px rgba(0,0,0,.03)}
+    .promo-card h3{margin:0 0 10px; font-size:18px; line-height:1.15}
+    .promo-card p{margin:0 0 18px; color:#6d675f; font-size:14px; line-height:1.45; min-height:62px}
+    .promo-actions{display:flex; gap:10px; flex-wrap:wrap}
+    .mini-btn{display:inline-flex; align-items:center; min-height:38px; padding:0 14px; border:none; border-radius:12px; background:#f4f1eb; font-weight:800; cursor:pointer}
+
+    .wrap{padding:16px 16px 28px}
+    .workspace{width:calc(100% - 32px); margin:0 auto}
+    .disclaimer{display:flex; gap:10px; align-items:flex-start; background:#FFFBDB; border:1px solid #F1E28A; color:#2a2400; padding:10px 12px; border-radius:10px; margin:0 0 12px 0}
+    .disclaimer b{font-weight:900}
+
+    .controls{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; margin:0 0 12px 0}
+    .control-group{display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--g-300); border-radius:999px; padding:6px 8px; box-shadow:var(--shadow)}
+    .control-group label{font-size:13px; font-weight:700}
+    .control-group select,.control-group button,.control-group input[type="text"]{border:none; background:#fff; color:var(--g-900); font-size:13px; padding:6px 10px; border-radius:999px}
+    .btn{background:var(--rb-black); color:var(--rb-yellow); padding:8px 14px; border-radius:10px; border:1px solid var(--rb-black); font-weight:800; font-size:13px; cursor:pointer; transition:transform var(--transition), box-shadow var(--transition), background var(--transition)}
+    .btn:hover{transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,.12)}
+    .btn.secondary{background:#fff; color:#111; border-color:var(--g-300)}
+    .muted{font-size:12px; color:var(--g-700)}
+    .status-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:#aaa; vertical-align:middle; margin-right:6px}
+    .status-dot[data-state="saved"]{background:#1fa372}
+    .status-dot[data-state="dirty"]{background:#e67e22}
+    .status-dot[data-state="error"]{background:#e74c3c}
+
+    .chip{border:1px solid var(--g-300); background:var(--g-100); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; cursor:pointer; user-select:none; transition:background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition)}
+    .chip[data-active="true"]{box-shadow:0 0 0 2px currentColor inset; color:#111}
+    .chip[aria-disabled="true"]{cursor:not-allowed; opacity:.85}
+    .chip[data-bank="rb"]{background:var(--rb-yellow); border-color:#E5C200}
+    .chip[data-bank="slsp"]{background:rgba(var(--slsp-rgb),.12); color:var(--slsp)}
+    .chip[data-bank="vub"]{background:rgba(var(--vub-rgb),.12); color:var(--vub)}
+    .chip[data-bank="csob"]{background:rgba(var(--csob-rgb),.12); color:var(--csob)}
+    .chip[data-bank="unicredit"]{background:rgba(var(--unicredit-rgb),.12); color:var(--unicredit)}
+    .chip[data-bank="mbank"]{background:rgba(var(--mbank-rgb),.12); color:var(--mbank)}
+    .chip[data-bank="prima"]{background:rgba(var(--prima-rgb),.14); color:var(--prima)}
+    .chip[data-bank="postova"]{background:rgba(var(--postova-rgb),.12); color:var(--postova)}
+    .chip[data-bank="b365free"]{background:rgba(var(--b365-rgb),.12); color:var(--b365)}
+    .chip[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.12); color:var(--b365plus)}
+
+    .table-card{border:1px solid var(--g-300); border-radius:var(--radius); overflow:hidden; background:#fff; box-shadow:var(--shadow)}
+    .table-scroll{overflow:auto; -webkit-overflow-scrolling:touch}
+    table{width:100%; border-collapse:separate; border-spacing:0; min-width:1120px}
+    caption{display:none}
+    thead th{position:sticky; top:0; z-index:6; font-weight:900; font-size:13px; text-align:left; padding:12px; border-bottom:2px solid var(--g-300); white-space:nowrap; color:#fff}
+    thead th[data-bank="rb"]{background:var(--rb-yellow); color:#111; border-bottom-color:#111; box-shadow:inset 0 -3px 0 #111}
+    thead th[data-bank="slsp"]{background:var(--slsp)}
+    thead th[data-bank="vub"]{background:var(--vub)}
+    thead th[data-bank="csob"]{background:var(--csob)}
+    thead th[data-bank="unicredit"]{background:var(--unicredit)}
+    thead th[data-bank="mbank"]{background:var(--mbank)}
+    thead th[data-bank="prima"]{background:var(--prima)}
+    thead th[data-bank="postova"]{background:var(--postova)}
+    thead th[data-bank="b365free"]{background:var(--b365)}
+    thead th[data-bank="b365plus"]{background:var(--b365plus)}
+
+    tbody td,tbody th{padding:12px; border-bottom:1px solid var(--g-300); vertical-align:top; font-size:14px; background:#fff}
+    tbody tr:nth-child(even) td,tbody tr:nth-child(even) th{background:var(--g-100)}
+    .feature-col{position:sticky; left:0; z-index:8; min-width:var(--feature-w); font-weight:900; color:#111; background:inherit; box-shadow:inset -1px 0 0 var(--g-300)}
+    .rb-sticky{position:sticky; left:var(--feature-w); z-index:7}
+    td.rb-featured{background:var(--rb-yellow-weak); border-left:2px solid var(--rb-yellow); box-shadow:inset 0 0 0 9999px rgba(255,212,0,.12); font-weight:800}
+
+    td[data-bank="slsp"]{background:rgba(var(--slsp-rgb),.05)}
+    td[data-bank="vub"]{background:rgba(var(--vub-rgb),.05)}
+    td[data-bank="csob"]{background:rgba(var(--csob-rgb),.05)}
+    td[data-bank="unicredit"]{background:rgba(var(--unicredit-rgb),.05)}
+    td[data-bank="mbank"]{background:rgba(var(--mbank-rgb),.05)}
+    td[data-bank="prima"]{background:rgba(var(--prima-rgb),.06)}
+    td[data-bank="postova"]{background:rgba(var(--postova-rgb),.05)}
+    td[data-bank="b365free"]{background:rgba(var(--b365-rgb),.05)}
+    td[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.05)}
+
+    [data-visible="false"]{display:none}
+
+    .panel{position:absolute; z-index:40; background:#fff; border:1px solid var(--g-300); border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,.18); padding:10px; width:min(380px,calc(100vw - 32px)); display:none}
+    .panel[open]{display:block}
+    .panel .head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 4px 8px 4px}
+    .panel .grid{display:grid; grid-template-columns:1fr; gap:6px; max-height:48vh; overflow:auto; padding:6px 2px}
+    .panel .row{display:flex; align-items:center; gap:8px}
+    .panel .actions{display:flex; gap:8px; padding-top:8px; justify-content:flex-end}
+    .panel input[type="checkbox"]{width:16px; height:16px}
+
+    /* Modal info */
+    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.4); z-index:50; padding:20px}
+    .modal[open]{display:flex}
+    .card{width:min(720px,100%); background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.2); border:1px solid var(--g-300)}
+    .card-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; color:#fff}
+    .card-head h3{margin:0; font-size:18px; font-weight:900}
+    .card-body{padding:14px 16px; display:grid; gap:12px}
+    .lists h4{margin:0 0 6px 0; font-size:13px; text-transform:uppercase; letter-spacing:.4px}
+    .lists ul{margin:0; padding-left:18px}
+    .close{background:#fff; border:1px solid var(--g-300); border-radius:8px; padding:6px 10px; font-weight:800; cursor:pointer}
+
+    /* Panel „Vlastný produkt“ */
+    dialog#customPanel{border:none; padding:0; width:min(700px,100%); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    dialog#customPanel .card{border:none}
+    dialog[open]::backdrop{background:rgba(0,0,0,.45)}
+
+    /* Tlač (bez posunu) */
+    @page{size:A4 landscape; margin:12mm}
+    @media print{
+      header,.controls,.legend,.disclaimer{display:none!important}
+      .table-card{border:none; box-shadow:none}
+      .table-scroll{overflow:visible}
+      table{min-width:auto; width:100%; border-collapse:collapse}
+      caption{display:table-caption; caption-side:top; font-weight:900; margin-bottom:6px; text-align:left; color:#111}
+      thead th{position:static!important; color:#111; background:#f2f2f2!important; border:1px solid #bbb}
+      thead{display:table-header-group}
+      tbody td,tbody th{font-size:11px; padding:6px; border:1px solid #bbb; background:#fff!important; box-shadow:none!important}
+      .feature-col,.rb-sticky{position:static!important; left:auto!important}
+      .feature-col{min-width:auto}
+      td.rb-featured{border-left:1px solid #bbb!important; background:#fff!important}
+      tr,td,th{break-inside:avoid}
+    }
+
+    @media (max-width:920px){
+      .topbar{display:none}
+      .mainnav{flex-wrap:wrap; gap:16px; padding:14px 0 16px}
+      .navlinks{order:3; gap:18px; flex-wrap:wrap; font-size:13px}
+      .actions{margin-left:auto; width:auto; justify-content:flex-end}
+      .hero{grid-template-columns:1fr}
+      .hero-copy{padding:34px 20px}
+      .hero-visual{min-height:220px}
+      .promo-grid{grid-template-columns:1fr; width:min(calc(100% - 32px), 520px)}
+      .promo-wrap::before{height:100%}
+      .workspace{width:calc(100% - 20px)}
+      thead th{font-size:12px; padding:10px}
+      tbody td,tbody th{font-size:13px; padding:10px}
+      :root{--feature-w:220px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <div class="mainnav" aria-label="Hlavná navigácia">
+        <div class="brand">
+			  <img class="rb-logo" src="logo.png" alt="Raiffeisen Bank" width="176" height="44" decoding="async" loading="eager" fetchpriority="high" />
+        </div>
+        <nav class="navlinks">
+          <a href="#">Účet</a>
+          <a href="#">Pôžička</a>
+          <a href="#">Sporenie</a>
+          <a href="#">Dôchodok</a>
+        </nav>
+        <div class="actions">
+          <button class="search-btn" aria-label="Hľadať">⌕</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="workspace">
+      <div class="disclaimer">
+        <div style="font-size:18px">ℹ️</div>
+        <div>
+          <b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená.
+          „Senior“ zobrazí len banky, ktoré ho ponúkajú. „Vlastný produkt“ umožní vybrať konkrétne riadky.
+        </div>
+      </div>
+
+      <div class="controls" id="controls">
+        <div class="control-group" aria-label="Vybrať produkt">
+          <label for="productSelect">Produkt</label>
+          <select id="productSelect">
+            <option value="standard">Bežný účet</option>
+            <option value="senior">Senior/Space účet (62+)</option>
+            <option value="custom">Vlastný produkt (výber riadkov)</option>
+          </select>
+          <button class="btn secondary" id="customCfgBtn" style="display:none">Nastaviť riadky (0)</button>
+        </div>
+
+        <div class="control-group" aria-label="Filter riadkov" style="position:relative">
+          <label for="rowSearch">Hľadať položku</label>
+          <input id="rowSearch" type="text" placeholder="napr. výber, SMS, zahraničí…" />
+          <button class="btn secondary" id="rowFilterBtn" title="Vybrať ktoré riadky dočasne zobraziť/skryť">Filtrovať riadky</button>
+          <div class="panel" id="rowFilterPanel" role="dialog" aria-label="Výber riadkov">
+            <div class="head">
+              <strong>Dočasný filter riadkov</strong>
+              <div style="display:flex; gap:6px">
+                <button class="btn secondary" id="rowsAll">Všetko</button>
+                <button class="btn secondary" id="rowsNone">Vyčistiť</button>
+              </div>
+            </div>
+            <div class="grid" id="rowCheckGrid"></div>
+            <div class="actions">
+              <button class="btn secondary" id="rowsClose">Hotovo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group" aria-label="Výber bánk">
+          <label>Banky:</label>
+          <div id="chips" style="display:flex; gap:6px 8px; flex-wrap:wrap"></div>
+        </div>
+
+        <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn secondary" id="resetBtn" title="Reset zobrazenia (filtre)">Reset zobrazenia</button>
+          <button class="btn secondary" id="printBtn" title="Tlač / PDF">Tlačiť / PDF</button>
+        </div>
+      </div>
+
+      <div class="table-card" role="region" aria-label="Porovnanie poplatkov bánk">
+        <div class="table-scroll">
+          <table id="bankTable">
+            <caption id="printCaption"></caption>
+            <thead>
+              <tr id="headRow">
+                <th class="feature-col">Položka</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Info modal -->
+  <dialog class="modal" id="infoModal">
+    <div class="card">
+      <div class="card-head" id="modalHead" style="background:#111">
+        <h3 id="modalTitle">Banka</h3>
+        <button class="close" id="modalClose">Zavrieť</button>
+      </div>
+      <div class="card-body">
+        <div class="lists">
+          <div>
+            <h4>Zaujímavosti</h4>
+            <ul id="modalZauj"></ul>
+          </div>
+          <div>
+            <h4>Aktuálne kampane</h4>
+            <ul id="modalKampane"></ul>
+          </div>
+        </div>
+        <div style="font-size:12px; color:#555">Pozn.: Informácie sú interné, orientačné a podliehajú priebežným zmenám podľa podmienok jednotlivých bánk.</div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Panel pre „Vlastný produkt“ -->
+  <dialog id="customPanel">
+    <div class="card">
+      <div class="card-head" style="background:#000; color:#FFD400">
+        <h3>Vlastný produkt – výber riadkov</h3>
+        <button class="close" id="customClose">Zavrieť</button>
+      </div>
+      <div class="card-body">
+        <div style="margin-bottom:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn secondary" id="customAll">Vybrať všetko</button>
+          <button class="btn secondary" id="customNone">Vymazať výber</button>
+          <span class="muted">Uložený výber sa použije, keď v roletke zvolíte „Vlastný produkt“.</span>
+        </div>
+        <div class="lists">
+          <div>
+            <h4>Položky</h4>
+            <ul id="customGrid" style="list-style:none; padding-left:0; display:grid; grid-template-columns:1fr; gap:8px"></ul>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px">
+          <button class="btn secondary" id="customSave">Uložiť výber</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (function(){
+      const BUNDLED = document.documentElement.hasAttribute('data-bundled');
+
+      const bankMeta = [
+        {id:'rb', name:'Raiffeisen (RB)', color:'var(--rb-yellow)'},
+        {id:'slsp', name:'Slovenská sporiteľňa (SLSP)', color:'var(--slsp)'},
+        {id:'vub', name:'VÚB Banka', color:'var(--vub)'},
+        {id:'csob', name:'ČSOB', color:'var(--csob)'},
+        {id:'unicredit', name:'UniCredit Bank', color:'var(--unicredit)'},
+        {id:'mbank', name:'mBank', color:'var(--mbank)'},
+        {id:'prima', name:'PRIMA banka', color:'var(--prima)'},
+        {id:'postova', name:'Poštová banka', color:'var(--postova)'},
+        {id:'b365free', name:'365.banka – účet zadarmo', color:'var(--b365)'},
+        {id:'b365plus', name:'365.banka – účet plus', color:'var(--b365plus)'}
+      ];
+
+      const FEATURES = [
+        {key:'monthly_fee', label:'Mesačný poplatok za účet'},
+        {key:'deposit_branch', label:'Vklad na pobočke'},
+        {key:'withdraw_branch', label:'Výber na pobočke'},
+        {key:'transfer_branch', label:'Prevod na pobočke'},
+        {key:'foreign_transfer_branch', label:'Prevod na pobočke do zahraničia'},
+        {key:'replacement_card', label:'Vydanie náhradnej karty'},
+        {key:'replacement_pin', label:'Vydanie náhradného PIN‑u'},
+        {key:'atm_other_bank', label:'Výber z cudzieho bankomatu'},
+        {key:'atm_abroad', label:'Výber z bankomatu v zahraničí'},
+        {key:'so_dd_branch', label:'Založenie/zmena/zrušenie TP/inkasa na pobočke'},
+        {key:'so_dd_ib', label:'Zmena/zrušenie TP/inkasa cez IB'},
+        {key:'notifications', label:'Notifikácie (SMS/PUSH)'},
+        {key:'paper_statement', label:'Výpis z účtu poštou'},
+        {key:'discount_50', label:'50% zľava z poplatku'},
+        {key:'discount_100', label:'100% zľava z poplatku'}
+      ];
+
+      const REMOTE_SOURCE = readJsonScript('data-source', {remoteUrl:'', timeoutMs:8000});
+      const JS_BUNDLE = window.RB_KONKURENCIA_DATA || null;
+      const BUNDLED_STANDARD = readJsonScript('data-standard', null) || JS_BUNDLE?.standard || null;
+      const BUNDLED_SENIOR   = readJsonScript('data-senior', null) || JS_BUNDLE?.senior || null;
+      const BUNDLED_CUSTOM   = readJsonScript('data-custom', null) || JS_BUNDLE?.customRows || null;
+      const BUNDLED_BANKINFO = readJsonScript('data-bank-info', null) || JS_BUNDLE?.bankInfo || null;
+
+      let DEFAULT_STANDARD = BUNDLED_STANDARD || createEmptyBankData();
+      let DEFAULT_SENIOR   = BUNDLED_SENIOR   || createEmptyBankData();
+      let DEFAULT_CUSTOM   = BUNDLED_CUSTOM   || createDefaultCustomRows();
+
+      const STORAGE_KEYS = {
+        customRows:'rb_competition_v2_custom_rows'
+      };
+
+      // UI refs
+      const table = document.getElementById('bankTable');
+      const tableHead = document.getElementById('headRow');
+      const tbody = document.getElementById('tbody');
+      const productSelect = document.getElementById('productSelect');
+      const rowSearch = document.getElementById('rowSearch');
+      const rowFilterBtn = document.getElementById('rowFilterBtn');
+      const rowFilterPanel = document.getElementById('rowFilterPanel');
+      const rowCheckGrid = document.getElementById('rowCheckGrid');
+      const rowsAllBtn = document.getElementById('rowsAll');
+      const rowsNoneBtn = document.getElementById('rowsNone');
+      const rowsCloseBtn = document.getElementById('rowsClose');
+      const chipsWrap = document.getElementById('chips');
+      const printBtn = document.getElementById('printBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const printCaption = document.getElementById('printCaption');
+
+      const infoModal = document.getElementById('infoModal');
+      const modalHead = document.getElementById('modalHead');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalZauj = document.getElementById('modalZauj');
+      const modalKampane = document.getElementById('modalKampane');
+      const modalClose = document.getElementById('modalClose');
+
+      const customCfgBtn = document.getElementById('customCfgBtn');
+      const customPanel  = document.getElementById('customPanel');
+      const customGrid   = document.getElementById('customGrid');
+      const customAll    = document.getElementById('customAll');
+      const customNone   = document.getElementById('customNone');
+      const customSave   = document.getElementById('customSave');
+      const customClose  = document.getElementById('customClose');
+
+      // Visibility and data
+      const visibleBanks = new Map(bankMeta.map(b=>[b.id,true]));
+      const visibleRows  = new Map(FEATURES.map(f=>[f.key,true]));
+      let DATA_STANDARD = deepClone(DEFAULT_STANDARD);
+      let DATA_SENIOR   = deepClone(DEFAULT_SENIOR);
+      let CUSTOM_ROWS   = deepClone(DEFAULT_CUSTOM);
+      let bankInfo       = BUNDLED_BANKINFO || createEmptyBankInfo();
+
+      function bankHasProduct(id, product){
+        if(product==='senior'){
+          const d = DATA_SENIOR[id];
+          return !!(d && d.monthly_fee && d.monthly_fee !== '—');
+        }
+        return true;
+      }
+      function getBanks(){
+        const prod = productSelect.value || 'standard';
+        return prod==='senior' ? bankMeta.filter(b=>bankHasProduct(b.id,'senior')) : bankMeta.slice();
+      }
+
+      function renderHead(){
+        [...tableHead.querySelectorAll('th[data-bank]')].forEach(n=>n.remove());
+        const banks = getBanks();
+        banks.forEach(b=>{
+          const th = document.createElement('th');
+          th.setAttribute('data-bank', b.id);
+          th.textContent = getBankHeaderLabel(b);
+          if(b.id==='rb') th.classList.add('rb-sticky');
+          th.style.cursor='pointer';
+          th.title='Klik pre zaujímavosti/kampane';
+          th.addEventListener('click', ()=>openInfo(b.id));
+          tableHead.appendChild(th);
+        });
+      }
+
+      function getBankHeaderLabel(bank){
+        if(bank.id==='rb') return 'RB';
+        if(bank.id==='slsp') return 'SLSP';
+        return bank.name.split(' ')[0];
+      }
+
+      function renderBody(){
+        tbody.innerHTML='';
+        const prod = productSelect.value;
+        const DATA = prod==='senior' ? DATA_SENIOR : DATA_STANDARD;
+        const banks = getBanks();
+
+        FEATURES.forEach(f=>{
+          if(prod==='custom' && !CUSTOM_ROWS[f.key]) return; // do vlastného produktu nevykresľuj nevybrané
+          const tr = document.createElement('tr');
+          tr.dataset.feature = f.key;
+          const th = document.createElement('th');
+          th.className='feature-col';
+          th.textContent = f.label;
+          tr.appendChild(th);
+          banks.forEach(b=>{
+            const td = document.createElement('td');
+            td.setAttribute('data-bank', b.id);
+            td.textContent = (DATA[b.id] && DATA[b.id][f.key]) ? DATA[b.id][f.key] : '—';
+            if(b.id==='rb') td.classList.add('rb-featured','rb-sticky');
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+
+        syncBankVisibility();
+        applyRowFilters();
+      }
+
+      function renderChips(){
+        chipsWrap.innerHTML='';
+        const banks = getBanks();
+        banks.forEach(b=>{
+          const chip = document.createElement('span');
+          chip.className='chip';
+          chip.dataset.bank=b.id;
+          chip.dataset.active = String(visibleBanks.get(b.id)!==false);
+          chip.textContent = b.id==='rb' ? 'RB' : b.name;
+          if(b.id==='rb'){
+            chip.setAttribute('aria-disabled','true');
+          }else{
+            chip.addEventListener('click', ()=>{
+              const cur = visibleBanks.get(b.id)!==false;
+              visibleBanks.set(b.id, !cur);
+              chip.dataset.active = String(!cur);
+              syncBankVisibility();
+            });
+          }
+          chipsWrap.appendChild(chip);
+        });
+      }
+      function syncBankVisibility(){
+        const banks = getBanks();
+        banks.forEach(b=>{
+          const vis = b.id==='rb' ? true : !!visibleBanks.get(b.id);
+          document.querySelectorAll(`[data-bank="${b.id}"]`).forEach(el=>{
+            el.setAttribute('data-visible', vis ? 'true' : 'false');
+          });
+          const chip = chipsWrap.querySelector(`.chip[data-bank="${b.id}"]`);
+          if(chip && b.id!=='rb') chip.dataset.active = String(vis);
+        });
+      }
+
+      // Dočasný filter riadkov
+      function renderRowPanel(){
+        rowCheckGrid.innerHTML='';
+        FEATURES.forEach(f=>{
+          const row = document.createElement('label');
+          row.className='row';
+          const cb = document.createElement('input');
+          cb.type='checkbox'; cb.checked = visibleRows.get(f.key);
+          cb.addEventListener('change', ()=>{
+            visibleRows.set(f.key, cb.checked);
+            applyRowFilters();
+          });
+          const span = document.createElement('span'); span.textContent = f.label;
+          row.appendChild(cb); row.appendChild(span);
+          rowCheckGrid.appendChild(row);
+        });
+      }
+      function applyRowFilters(){
+        const q = rowSearch.value.trim().toLowerCase();
+        [...tbody.rows].forEach(r=>{
+          const key = r.dataset.feature;
+          const allow = !!visibleRows.get(key);
+          const match = q ? r.firstChild.textContent.toLowerCase().includes(q) : true;
+          r.style.display = (allow && match) ? '' : 'none';
+        });
+      }
+
+      // Info modal
+      function openInfo(id){
+        const meta = bankMeta.find(b=>b.id===id);
+        const info = bankInfo[id] || {zauj:[],kampane:[]};
+        modalTitle.textContent = meta.name;
+        modalHead.style.background = meta.color;
+        modalHead.style.color = id==='rb' ? '#111' : '#fff';
+        modalZauj.innerHTML = info.zauj.length ? info.zauj.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
+        modalKampane.innerHTML = info.kampane.length ? info.kampane.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
+        infoModal.setAttribute('open','');
+      }
+      function closeInfo(){ infoModal.removeAttribute('open'); }
+
+      function renderCustomPanel(){
+        customGrid.innerHTML='';
+        FEATURES.forEach(feature=>{
+          const item = document.createElement('li');
+          const label = document.createElement('label');
+          label.className = 'row';
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = !!CUSTOM_ROWS[feature.key];
+          checkbox.addEventListener('change', ()=>{
+            CUSTOM_ROWS[feature.key] = checkbox.checked;
+            updateCustomBtnText();
+          });
+          const span = document.createElement('span');
+          span.textContent = feature.label;
+          label.appendChild(checkbox);
+          label.appendChild(span);
+          item.appendChild(label);
+          customGrid.appendChild(item);
+        });
+      }
+
+      function updateCustomBtnText(){
+        const selectedCount = FEATURES.filter(feature=>CUSTOM_ROWS[feature.key]).length;
+        customCfgBtn.textContent = `Nastaviť riadky (${selectedCount})`;
+      }
+
+      // Handlers
+      function renderAll(){ renderHead(); renderChips(); renderRowPanel(); renderBody(); updateCustomBtnText(); }
+
+      productSelect.addEventListener('change', ()=>{
+        customCfgBtn.style.display = productSelect.value==='custom' ? '' : 'none';
+        if(productSelect.value==='senior'){ getBanks().forEach(b=>visibleBanks.set(b.id,true)); }
+        renderAll();
+      });
+
+      rowSearch.addEventListener('input', applyRowFilters);
+      rowFilterBtn.addEventListener('click', ()=>{
+        const rect = rowFilterBtn.getBoundingClientRect();
+        rowFilterPanel.style.left = `${rect.left}px`;
+        rowFilterPanel.style.top  = `${rect.bottom + window.scrollY + 6}px`;
+        rowFilterPanel.toggleAttribute('open');
+      });
+      rowsAllBtn.addEventListener('click', ()=>{ FEATURES.forEach(f=>visibleRows.set(f.key,true));  renderRowPanel(); applyRowFilters(); });
+      rowsNoneBtn.addEventListener('click', ()=>{ FEATURES.forEach(f=>visibleRows.set(f.key,false)); renderRowPanel(); applyRowFilters(); });
+      rowsCloseBtn.addEventListener('click', ()=> rowFilterPanel.removeAttribute('open'));
+      document.addEventListener('click', (e)=>{
+        if(rowFilterPanel.hasAttribute('open')){
+          const within = rowFilterPanel.contains(e.target) || rowFilterBtn.contains(e.target);
+          if(!within) rowFilterPanel.removeAttribute('open');
+        }
+      });
+
+      printBtn.addEventListener('click', ()=>{
+        const ts = new Date().toLocaleString('sk-SK');
+        const label = productSelect.value==='senior' ? 'Senior/Space účet' : (productSelect.value==='custom' ? 'Vlastný produkt' : 'Bežný účet');
+        printCaption.textContent = `Porovnanie – ${label} | Generované: ${ts}`;
+        window.print();
+      });
+      resetBtn.addEventListener('click', ()=>{
+        bankMeta.forEach(b=>visibleBanks.set(b.id,true));
+        FEATURES.forEach(f=>visibleRows.set(f.key,true));
+        rowSearch.value=''; renderAll();
+      });
+
+      modalClose.addEventListener('click', ()=>infoModal.close());
+      infoModal.addEventListener('click', (e)=>{ if(e.target===infoModal) infoModal.close(); });
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ infoModal.close(); customPanel.close(); } });
+
+      // Custom panel events
+      customCfgBtn.addEventListener('click', ()=>{ renderCustomPanel(); customPanel.showModal(); });
+      customAll.addEventListener('click', ()=>{ FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=true); renderCustomPanel(); });
+      customNone.addEventListener('click', ()=>{ FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=false); renderCustomPanel(); });
+      customSave.addEventListener('click', ()=>{
+        localStorage.setItem(STORAGE_KEYS.customRows, JSON.stringify(CUSTOM_ROWS));
+        customPanel.close();
+        if(productSelect.value==='custom') renderBody();
+      });
+      customClose.addEventListener('click', ()=>customPanel.close());
+
+      // Utils
+      function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+      function mergeData(defs, inc){ const out=deepClone(defs); for(const b in inc){ out[b]=out[b]||{}; for(const k in inc[b]) out[b][k]=inc[b][k]; } return out; }
+      function mergeInfo(defs, inc){
+        const out = deepClone(defs);
+        for(const bankId in inc){
+          const next = inc[bankId] || {};
+          out[bankId] = out[bankId] || {zauj:[], kampane:[]};
+          out[bankId].zauj = Array.isArray(next.zauj) ? next.zauj.slice() : out[bankId].zauj;
+          out[bankId].kampane = Array.isArray(next.kampane) ? next.kampane.slice() : out[bankId].kampane;
+        }
+        return out;
+      }
+      function createDefaultCustomRows(){
+        return Object.fromEntries(FEATURES.map(f=>[f.key, true]));
+      }
+      function createEmptyBankData(){
+        const out = {};
+        bankMeta.forEach(bank=>{
+          out[bank.id] = {};
+          FEATURES.forEach(feature=>{ out[bank.id][feature.key] = '—'; });
+        });
+        return out;
+      }
+      function createEmptyBankInfo(){
+        const out = {};
+        bankMeta.forEach(bank=>{ out[bank.id] = {zauj:[], kampane:[]}; });
+        return out;
+      }
+      function readJsonScript(id, fallback){
+        const node = document.getElementById(id);
+        if(!node) return fallback;
+        try{ return JSON.parse(node.textContent); }
+        catch(_){ return fallback; }
+      }
+      function upsertJsonScript(root, id, payload){
+        let node = root.querySelector(`#${id}`);
+        if(!node){
+          node = document.createElement('script');
+          node.type = 'application/json';
+          node.id = id;
+          const head = root.querySelector('head');
+          head.appendChild(node);
+        }
+        node.textContent = JSON.stringify(payload, null, 2);
+      }
+      function loadFromStorage(){
+        try{
+          const cu = localStorage.getItem(STORAGE_KEYS.customRows);
+          if(cu) CUSTOM_ROWS = Object.assign({}, DEFAULT_CUSTOM, JSON.parse(cu));
+        }catch(_){}
+      }
+      async function loadRemoteDefaults(){
+        if(BUNDLED) return;
+        if(location.protocol === 'file:' && JS_BUNDLE) return;
+        const sources = [REMOTE_SOURCE.remoteUrl, REMOTE_SOURCE.fallbackUrl].filter(Boolean);
+        if(!sources.length) return;
+        let remote = null;
+        let lastError = null;
+        for(const sourceUrl of sources){
+          try{
+            remote = await fetchJsonWithTimeout(sourceUrl, REMOTE_SOURCE.timeoutMs || 8000);
+            break;
+          }catch(err){
+            lastError = err;
+          }
+        }
+        if(!remote) throw lastError || new Error('Neboli nájdené žiadne dáta.');
+        DEFAULT_STANDARD = mergeData(createEmptyBankData(), remote.standard || {});
+        DEFAULT_SENIOR   = mergeData(createEmptyBankData(), remote.senior || {});
+        DEFAULT_CUSTOM   = Object.assign(createDefaultCustomRows(), remote.customRows || {});
+        bankInfo         = mergeInfo(createEmptyBankInfo(), remote.bankInfo || {});
+        DATA_STANDARD    = deepClone(DEFAULT_STANDARD);
+        DATA_SENIOR      = deepClone(DEFAULT_SENIOR);
+        CUSTOM_ROWS      = deepClone(DEFAULT_CUSTOM);
+      }
+      async function fetchJsonWithTimeout(url, timeoutMs){
+        const ctrl = new AbortController();
+        const timer = setTimeout(()=>ctrl.abort(), timeoutMs);
+        try{
+          const res = await fetch(url, {cache:'no-store', signal:ctrl.signal});
+          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          return await res.json();
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      // Init
+      init();
+      async function init(){
+        try{
+          await loadRemoteDefaults();
+        }catch(err){
+          console.error('Nepodarilo sa načítať dáta z Gistu.', err);
+        }
+        if(!BUNDLED) loadFromStorage();
+        renderAll();
+        updateCustomBtnText();
+      }
+    })();
+  </script>
+</body>
+</html>
