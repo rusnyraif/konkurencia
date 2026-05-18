@@ -690,9 +690,18 @@
       }
       async function loadRemoteDefaults(){
         if(BUNDLED) return;
-        if(location.protocol === 'file:' && JS_BUNDLE) return;
+        if(JS_BUNDLE && location.protocol === 'file:'){
+          applyBundledDefaults(JS_BUNDLE);
+          return;
+        }
         const sources = [REMOTE_SOURCE.remoteUrl, REMOTE_SOURCE.fallbackUrl].filter(Boolean);
-        if(!sources.length) return;
+        if(!sources.length){
+          if(JS_BUNDLE){
+            applyBundledDefaults(JS_BUNDLE);
+            return;
+          }
+          return;
+        }
         let remote = null;
         let lastError = null;
         for(const sourceUrl of sources){
@@ -703,11 +712,21 @@
             lastError = err;
           }
         }
-        if(!remote) throw lastError || new Error('Neboli nájdené žiadne dáta.');
-        DEFAULT_STANDARD = mergeData(createEmptyBankData(), remote.standard || {});
-        DEFAULT_SENIOR   = mergeData(createEmptyBankData(), remote.senior || {});
-        DEFAULT_CUSTOM   = Object.assign(createDefaultCustomRows(), remote.customRows || {});
-        bankInfo         = mergeInfo(createEmptyBankInfo(), remote.bankInfo || {});
+        if(!remote){
+          if(JS_BUNDLE){
+            applyBundledDefaults(JS_BUNDLE);
+            return;
+          }
+          throw lastError || new Error('Neboli nájdené žiadne dáta.');
+        }
+        applyBundledDefaults(remote);
+      }
+      function applyBundledDefaults(payload){
+        const source = payload || {};
+        DEFAULT_STANDARD = mergeData(createEmptyBankData(), source.standard || {});
+        DEFAULT_SENIOR   = mergeData(createEmptyBankData(), source.senior || {});
+        DEFAULT_CUSTOM   = Object.assign(createDefaultCustomRows(), source.customRows || {});
+        bankInfo         = mergeInfo(createEmptyBankInfo(), source.bankInfo || {});
         DATA_STANDARD    = deepClone(DEFAULT_STANDARD);
         DATA_SENIOR      = deepClone(DEFAULT_SENIOR);
         CUSTOM_ROWS      = deepClone(DEFAULT_CUSTOM);
