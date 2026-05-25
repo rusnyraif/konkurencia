@@ -1,4 +1,4 @@
-window.RB_KONKURENCIA_DATA = {
+{
   "standard": {
     "rb": {
       "monthly_fee": "5,50 €",
@@ -584,4 +584,4 @@ window.RB_KONKURENCIA_DATA = {
       ]
     }
   }
-};
+}

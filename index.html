@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač, vlastný produkt</title>
 
-  <!-- Konfigurácia vzdialeného zdroja dát. Očakáva sa raw JSON z Gistu. -->
+  <!-- Konfigurácia zdroja dát. Očakáva sa JSON v rovnakom priečinku. -->
   <script id="data-source" type="application/json">
 {
-  "remoteUrl":"https://raw.code.rbi.tech/gist/ISKA8605/e2b0ac8628bae0e6ec316462ede9172b/raw/2233c8de5efd6634d4f4bda5362f6d4171a12b8e/gistfile1.txt?token=AAAEOKYML7H4U7HLGKB7HUDKCRBKS",
-  "fallbackUrl":"./rb-konkurencia-data.json",
+  "remoteUrl":"./rb-konkurencia-data.json",
   "timeoutMs":8000
 }
   </script>
@@ -22,7 +21,7 @@
       --csob:#00A3E0; --csob-rgb:0,163,224; --unicredit:#E31837; --unicredit-rgb:227,24,55;
       --mbank:#EA1D2D; --mbank-rgb:234,29,45; --prima:#8CC63F; --prima-rgb:140,198,63;
       --postova:#FF6F00; --postova-rgb:255,111,0; --b365:#39B54A; --b365-rgb:57,181,74;
-      --b365plus:#009688; --b365plus-rgb:0,150,136;
+      --b365plus:#009688; --b365plus-rgb:0,150,136; --tatrabanka:#0B4EA2; --tatrabanka-rgb:11,78,162;
 
       --g-900:#1A1A1A; --g-700:#4D4D4D; --g-400:#C9C9C9; --g-300:#E6E6E6; --g-200:#F0F0F0; --g-100:#F9F9F9;
       --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.06);
@@ -39,7 +38,10 @@
     .mainnav{display:flex; align-items:center; gap:28px; padding:16px 0 20px}
     .brand{display:flex; align-items:center; gap:18px; margin-right:12px}
     .rb-logo{display:block; width:176px; height:auto}
-    .navlinks{display:flex; gap:34px; align-items:center; font-size:14px; color:#47413a}
+    .navlinks{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .navlink-btn{display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:0 18px; border:1px solid #d8d1c7; border-radius:999px; background:#f8f4ee; color:#47413a; font-size:14px; font-weight:800; cursor:pointer; transition:background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition)}
+    .navlink-btn:hover{transform:translateY(-1px)}
+    .navlink-btn[data-active="true"]{background:var(--rb-yellow); border-color:#d1b100; color:#111}
     .actions{margin-left:auto; display:flex; align-items:center; gap:12px}
     .search-btn{width:42px; height:42px; border-radius:999px; border:none; background:transparent; font-size:19px; cursor:pointer}
 
@@ -102,6 +104,12 @@
     .chip[data-bank="postova"]{background:rgba(var(--postova-rgb),.12); color:var(--postova)}
     .chip[data-bank="b365free"]{background:rgba(var(--b365-rgb),.12); color:var(--b365)}
     .chip[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.12); color:var(--b365plus)}
+    .chip[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.12); color:var(--tatrabanka)}
+
+    .view-intro{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin:0 0 14px}
+    .view-copy h1{margin:0 0 4px; font-size:28px; line-height:1.1}
+    .view-copy p{margin:0; color:var(--g-700); font-size:14px}
+    .view-badge{display:inline-flex; align-items:center; min-height:36px; padding:0 14px; border-radius:999px; background:#fff3bf; border:1px solid #ebd170; font-weight:800; color:#554300}
 
     .table-card{border:1px solid var(--g-300); border-radius:var(--radius); overflow:hidden; background:#fff; box-shadow:var(--shadow)}
     .table-scroll{overflow:auto; -webkit-overflow-scrolling:touch}
@@ -118,6 +126,7 @@
     thead th[data-bank="postova"]{background:var(--postova)}
     thead th[data-bank="b365free"]{background:var(--b365)}
     thead th[data-bank="b365plus"]{background:var(--b365plus)}
+    thead th[data-bank="tatrabanka"]{background:var(--tatrabanka)}
 
     tbody td,tbody th{padding:12px; border-bottom:1px solid var(--g-300); vertical-align:top; font-size:14px; background:#fff}
     tbody tr:nth-child(even) td,tbody tr:nth-child(even) th{background:var(--g-100)}
@@ -134,6 +143,7 @@
     td[data-bank="postova"]{background:rgba(var(--postova-rgb),.05)}
     td[data-bank="b365free"]{background:rgba(var(--b365-rgb),.05)}
     td[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.05)}
+    td[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.05)}
 
     [data-visible="false"]{display:none}
 
@@ -181,7 +191,8 @@
     @media (max-width:920px){
       .topbar{display:none}
       .mainnav{flex-wrap:wrap; gap:16px; padding:14px 0 16px}
-      .navlinks{order:3; gap:18px; flex-wrap:wrap; font-size:13px}
+      .navlinks{order:3; gap:10px}
+      .navlink-btn{font-size:13px; min-height:38px; padding:0 14px}
       .actions{margin-left:auto; width:auto; justify-content:flex-end}
       .hero{grid-template-columns:1fr}
       .hero-copy{padding:34px 20px}
@@ -189,6 +200,7 @@
       .promo-grid{grid-template-columns:1fr; width:min(calc(100% - 32px), 520px)}
       .promo-wrap::before{height:100%}
       .workspace{width:calc(100% - 20px)}
+      .view-intro{flex-direction:column; gap:10px}
       thead th{font-size:12px; padding:10px}
       tbody td,tbody th{font-size:13px; padding:10px}
       :root{--feature-w:220px}
@@ -202,11 +214,9 @@
         <div class="brand">
 			  <img class="rb-logo" src="logo.png" alt="Raiffeisen Bank" width="176" height="44" decoding="async" loading="eager" fetchpriority="high" />
         </div>
-        <nav class="navlinks">
-          <a href="#">Účet</a>
-          <a href="#">Pôžička</a>
-          <a href="#">Sporenie</a>
-          <a href="#">Dôchodok</a>
+        <nav class="navlinks" id="familyNav" aria-label="Produktové rodiny">
+          <button type="button" class="navlink-btn" data-family="accounts" data-active="true">Účty</button>
+          <button type="button" class="navlink-btn" data-family="travel" data-active="false">Cestovné poistenie</button>
         </nav>
         <div class="actions">
           <button class="search-btn" aria-label="Hľadať">⌕</button>
@@ -217,9 +227,17 @@
 
   <main class="wrap">
     <div class="workspace">
+      <div class="view-intro">
+        <div class="view-copy">
+          <h1 id="viewTitle">Účty a poplatky</h1>
+          <p id="viewHint">Porovnanie osobných účtov a ich variantov v jednej tabuľke.</p>
+        </div>
+        <div class="view-badge" id="viewBadge">Rodina: Účty</div>
+      </div>
+
       <div class="disclaimer">
         <div style="font-size:18px">ℹ️</div>
-        <div>
+        <div id="disclaimerText">
           <b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená.
           „Senior“ zobrazí len banky, ktoré ho ponúkajú. „Vlastný produkt“ umožní vybrať konkrétne riadky.
         </div>
@@ -227,12 +245,8 @@
 
       <div class="controls" id="controls">
         <div class="control-group" aria-label="Vybrať produkt">
-          <label for="productSelect">Produkt</label>
-          <select id="productSelect">
-            <option value="standard">Bežný účet</option>
-            <option value="senior">Senior/Space účet (62+)</option>
-            <option value="custom">Vlastný produkt (výber riadkov)</option>
-          </select>
+          <label id="productLabel" for="productSelect">Variant</label>
+          <select id="productSelect"></select>
           <button class="btn secondary" id="customCfgBtn" style="display:none">Nastaviť riadky (0)</button>
         </div>
 
@@ -333,22 +347,21 @@
 
   <script>
     (function(){
-      const BUNDLED = document.documentElement.hasAttribute('data-bundled');
+      const BANK_META = {
+        rb:{id:'rb', name:'Raiffeisen (RB)', shortName:'RB', color:'var(--rb-yellow)'},
+        slsp:{id:'slsp', name:'Slovenská sporiteľňa (SLSP)', shortName:'SLSP', color:'var(--slsp)'},
+        vub:{id:'vub', name:'VÚB Banka', shortName:'VÚB', color:'var(--vub)'},
+        csob:{id:'csob', name:'ČSOB', shortName:'ČSOB', color:'var(--csob)'},
+        unicredit:{id:'unicredit', name:'UniCredit Bank', shortName:'UniCredit', color:'var(--unicredit)'},
+        mbank:{id:'mbank', name:'mBank', shortName:'mBank', color:'var(--mbank)'},
+        prima:{id:'prima', name:'PRIMA banka', shortName:'PRIMA', color:'var(--prima)'},
+        postova:{id:'postova', name:'Poštová banka', shortName:'Poštová', color:'var(--postova)'},
+        b365free:{id:'b365free', name:'365.banka – účet zadarmo', shortName:'365 zadarmo', color:'var(--b365)'},
+        b365plus:{id:'b365plus', name:'365.banka – účet plus', shortName:'365 plus', color:'var(--b365plus)'},
+        tatrabanka:{id:'tatrabanka', name:'Tatra banka', shortName:'Tatra banka', color:'var(--tatrabanka)'}
+      };
 
-      const bankMeta = [
-        {id:'rb', name:'Raiffeisen (RB)', color:'var(--rb-yellow)'},
-        {id:'slsp', name:'Slovenská sporiteľňa (SLSP)', color:'var(--slsp)'},
-        {id:'vub', name:'VÚB Banka', color:'var(--vub)'},
-        {id:'csob', name:'ČSOB', color:'var(--csob)'},
-        {id:'unicredit', name:'UniCredit Bank', color:'var(--unicredit)'},
-        {id:'mbank', name:'mBank', color:'var(--mbank)'},
-        {id:'prima', name:'PRIMA banka', color:'var(--prima)'},
-        {id:'postova', name:'Poštová banka', color:'var(--postova)'},
-        {id:'b365free', name:'365.banka – účet zadarmo', color:'var(--b365)'},
-        {id:'b365plus', name:'365.banka – účet plus', color:'var(--b365plus)'}
-      ];
-
-      const FEATURES = [
+      const ACCOUNT_FEATURES = [
         {key:'monthly_fee', label:'Mesačný poplatok za účet'},
         {key:'deposit_branch', label:'Vklad na pobočke'},
         {key:'withdraw_branch', label:'Výber na pobočke'},
@@ -366,16 +379,67 @@
         {key:'discount_100', label:'100% zľava z poplatku'}
       ];
 
-      const REMOTE_SOURCE = readJsonScript('data-source', {remoteUrl:'', timeoutMs:8000});
-      const JS_BUNDLE = window.RB_KONKURENCIA_DATA || null;
-      const BUNDLED_STANDARD = readJsonScript('data-standard', null) || JS_BUNDLE?.standard || null;
-      const BUNDLED_SENIOR   = readJsonScript('data-senior', null) || JS_BUNDLE?.senior || null;
-      const BUNDLED_CUSTOM   = readJsonScript('data-custom', null) || JS_BUNDLE?.customRows || null;
-      const BUNDLED_BANKINFO = readJsonScript('data-bank-info', null) || JS_BUNDLE?.bankInfo || null;
+      const TRAVEL_FEATURES = [
+        {key:'annual_premium', label:'Ročné poistné'},
+        {key:'medical_expenses', label:'Poistenie liečebných nákladov'},
+        {key:'liability', label:'Poistenie zodp. za škodu zdravie / majetok'},
+        {key:'dental_treatment', label:'Dentálne ošetrenie'},
+        {key:'baggage_total_single', label:'Poistenie batožiny celkovo / jeden kus'},
+        {key:'documents_loss', label:'Strata osobných dokladov'},
+        {key:'baggage_delay_flight', label:'Oneskorenie batožiny - cest. lietadlom'},
+        {key:'baggage_loss_flight', label:'Poškodenie alebo strata batožiny - cest. lietadlom'},
+        {key:'flight_delay_cancel', label:'Oneskorenie alebo zrušenie letu'},
+        {key:'mountain_rescue_sr', label:'Zásah horskej služby v SR'},
+        {key:'trip_cancellation', label:'Poistenie storno poplatkov'},
+        {key:'vehicle_assistance', label:'Technická asistencia k vozidlám'},
+        {key:'accident_death_disability', label:'Smrť úrazom / trvalé následky'},
+        {key:'max_age_limit', label:'Vekový limit poistenej osoby max.'}
+      ];
 
-      let DEFAULT_STANDARD = BUNDLED_STANDARD || createEmptyBankData();
-      let DEFAULT_SENIOR   = BUNDLED_SENIOR   || createEmptyBankData();
-      let DEFAULT_CUSTOM   = BUNDLED_CUSTOM   || createDefaultCustomRows();
+      const FAMILY_CONFIG = {
+        accounts:{
+          title:'Účty a poplatky',
+          hint:'Porovnanie osobných účtov a ich variantov v jednej tabuľke.',
+          badge:'Rodina: Účty',
+          disclaimer:'<b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená. „Senior“ zobrazí len banky, ktoré ho ponúkajú. „Vlastný produkt“ umožní vybrať konkrétne riadky.',
+          productLabel:'Produkt',
+          searchPlaceholder:'napr. výber, SMS, zahraničí…',
+          bankIds:['rb','slsp','vub','csob','unicredit','mbank','prima','postova','b365free','b365plus'],
+          features:ACCOUNT_FEATURES,
+          variants:[
+            {value:'standard', label:'Bežný účet'},
+            {value:'senior', label:'Senior/Space účet (62+)'},
+            {value:'custom', label:'Vlastný produkt (výber riadkov)'}
+          ],
+          defaultVariant:'standard',
+          supportsCustomRows:true
+        },
+        travel:{
+          title:'Cestovné poistenie',
+          hint:'Porovnanie krytia a limitov cestovného poistenia medzi vybranými bankami.',
+          badge:'Rodina: Cestovné poistenie',
+          disclaimer:'<b>Interná pomôcka pre pobočky.</b> Cestovné poistenie je vedené ako samostatná produktová rodina. Zobrazené sú len banky, pre ktoré sú momentálne dostupné porovnateľné údaje.',
+          productLabel:'Variant',
+          searchPlaceholder:'napr. batožina, storno, liečebné náklady…',
+          bankIds:['vub','slsp','csob','tatrabanka'],
+          features:TRAVEL_FEATURES,
+          variants:[
+            {value:'standard', label:'Štandardné porovnanie'}
+          ],
+          defaultVariant:'standard',
+          supportsCustomRows:false
+        }
+      };
+
+      const REMOTE_SOURCE = readJsonScript('data-source', {remoteUrl:'', timeoutMs:8000});
+      const BUNDLED_SOURCE = window.RB_KONKURENCIA_DATA || null;
+      let activeFamily = 'accounts';
+      const selectedVariantByFamily = {accounts:'standard', travel:'standard'};
+
+      let DEFAULT_STANDARD = createEmptyBankData('accounts');
+      let DEFAULT_SENIOR   = createEmptyBankData('accounts');
+      let DEFAULT_TRAVEL   = createEmptyBankData('travel');
+      let DEFAULT_CUSTOM   = createDefaultCustomRows();
 
       const STORAGE_KEYS = {
         customRows:'rb_competition_v2_custom_rows'
@@ -386,6 +450,7 @@
       const tableHead = document.getElementById('headRow');
       const tbody = document.getElementById('tbody');
       const productSelect = document.getElementById('productSelect');
+      const productLabel = document.getElementById('productLabel');
       const rowSearch = document.getElementById('rowSearch');
       const rowFilterBtn = document.getElementById('rowFilterBtn');
       const rowFilterPanel = document.getElementById('rowFilterPanel');
@@ -397,6 +462,11 @@
       const printBtn = document.getElementById('printBtn');
       const resetBtn = document.getElementById('resetBtn');
       const printCaption = document.getElementById('printCaption');
+      const familyTabs = [...document.querySelectorAll('.navlink-btn')];
+      const viewTitle = document.getElementById('viewTitle');
+      const viewHint = document.getElementById('viewHint');
+      const viewBadge = document.getElementById('viewBadge');
+      const disclaimerText = document.getElementById('disclaimerText');
 
       const infoModal = document.getElementById('infoModal');
       const modalHead = document.getElementById('modalHead');
@@ -414,23 +484,74 @@
       const customClose  = document.getElementById('customClose');
 
       // Visibility and data
-      const visibleBanks = new Map(bankMeta.map(b=>[b.id,true]));
-      const visibleRows  = new Map(FEATURES.map(f=>[f.key,true]));
+      const visibleBanks = new Map(Object.keys(BANK_META).map(id=>[id,true]));
+      const visibleRowsByFamily = {
+        accounts:new Map(ACCOUNT_FEATURES.map(f=>[f.key,true])),
+        travel:new Map(TRAVEL_FEATURES.map(f=>[f.key,true]))
+      };
       let DATA_STANDARD = deepClone(DEFAULT_STANDARD);
       let DATA_SENIOR   = deepClone(DEFAULT_SENIOR);
+      let DATA_TRAVEL   = deepClone(DEFAULT_TRAVEL);
       let CUSTOM_ROWS   = deepClone(DEFAULT_CUSTOM);
-      let bankInfo       = BUNDLED_BANKINFO || createEmptyBankInfo();
+      let bankInfo = {
+        accounts:createEmptyBankInfo('accounts'),
+        travel:createEmptyBankInfo('travel')
+      };
 
+      function getActiveConfig(){
+        return FAMILY_CONFIG[activeFamily];
+      }
+      function getActiveFeatures(){
+        return getActiveConfig().features;
+      }
+      function getActiveVisibleRows(){
+        return visibleRowsByFamily[activeFamily];
+      }
+      function getActiveVariant(){
+        return productSelect.value || selectedVariantByFamily[activeFamily] || getActiveConfig().defaultVariant;
+      }
+      function getActiveData(){
+        if(activeFamily==='travel') return DATA_TRAVEL;
+        return getActiveVariant()==='senior' ? DATA_SENIOR : DATA_STANDARD;
+      }
       function bankHasProduct(id, product){
-        if(product==='senior'){
+        if(activeFamily==='accounts' && product==='senior'){
           const d = DATA_SENIOR[id];
           return !!(d && d.monthly_fee && d.monthly_fee !== '—');
+        }
+        if(activeFamily==='travel'){
+          const d = DATA_TRAVEL[id];
+          return !!(d && d.annual_premium && d.annual_premium !== '—');
         }
         return true;
       }
       function getBanks(){
-        const prod = productSelect.value || 'standard';
-        return prod==='senior' ? bankMeta.filter(b=>bankHasProduct(b.id,'senior')) : bankMeta.slice();
+        const prod = getActiveVariant();
+        return getActiveConfig().bankIds
+          .map(id=>BANK_META[id])
+          .filter(Boolean)
+          .filter(bank=>prod==='senior' ? bankHasProduct(bank.id,'senior') : bankHasProduct(bank.id, prod));
+      }
+      function renderFamilyNav(){
+        familyTabs.forEach(tab=>{
+          tab.dataset.active = String(tab.dataset.family === activeFamily);
+        });
+      }
+      function renderViewMeta(){
+        const config = getActiveConfig();
+        viewTitle.textContent = config.title;
+        viewHint.textContent = config.hint;
+        viewBadge.textContent = config.badge;
+        disclaimerText.innerHTML = config.disclaimer;
+        productLabel.textContent = config.productLabel;
+        rowSearch.placeholder = config.searchPlaceholder;
+      }
+      function renderProductOptions(){
+        const config = getActiveConfig();
+        const nextValue = selectedVariantByFamily[activeFamily] || config.defaultVariant;
+        productSelect.innerHTML = config.variants.map(variant=>`<option value="${variant.value}">${variant.label}</option>`).join('');
+        productSelect.value = config.variants.some(variant=>variant.value===nextValue) ? nextValue : config.defaultVariant;
+        customCfgBtn.style.display = (config.supportsCustomRows && productSelect.value==='custom') ? '' : 'none';
       }
 
       function renderHead(){
@@ -449,19 +570,17 @@
       }
 
       function getBankHeaderLabel(bank){
-        if(bank.id==='rb') return 'RB';
-        if(bank.id==='slsp') return 'SLSP';
-        return bank.name.split(' ')[0];
+        return bank.shortName || bank.name.split(' ')[0];
       }
 
       function renderBody(){
         tbody.innerHTML='';
-        const prod = productSelect.value;
-        const DATA = prod==='senior' ? DATA_SENIOR : DATA_STANDARD;
+        const prod = getActiveVariant();
+        const DATA = getActiveData();
         const banks = getBanks();
 
-        FEATURES.forEach(f=>{
-          if(prod==='custom' && !CUSTOM_ROWS[f.key]) return; // do vlastného produktu nevykresľuj nevybrané
+        getActiveFeatures().forEach(f=>{
+          if(activeFamily==='accounts' && prod==='custom' && !CUSTOM_ROWS[f.key]) return;
           const tr = document.createElement('tr');
           tr.dataset.feature = f.key;
           const th = document.createElement('th');
@@ -519,13 +638,13 @@
       // Dočasný filter riadkov
       function renderRowPanel(){
         rowCheckGrid.innerHTML='';
-        FEATURES.forEach(f=>{
+        getActiveFeatures().forEach(f=>{
           const row = document.createElement('label');
           row.className='row';
           const cb = document.createElement('input');
-          cb.type='checkbox'; cb.checked = visibleRows.get(f.key);
+          cb.type='checkbox'; cb.checked = getActiveVisibleRows().get(f.key);
           cb.addEventListener('change', ()=>{
-            visibleRows.set(f.key, cb.checked);
+            getActiveVisibleRows().set(f.key, cb.checked);
             applyRowFilters();
           });
           const span = document.createElement('span'); span.textContent = f.label;
@@ -537,7 +656,7 @@
         const q = rowSearch.value.trim().toLowerCase();
         [...tbody.rows].forEach(r=>{
           const key = r.dataset.feature;
-          const allow = !!visibleRows.get(key);
+          const allow = !!getActiveVisibleRows().get(key);
           const match = q ? r.firstChild.textContent.toLowerCase().includes(q) : true;
           r.style.display = (allow && match) ? '' : 'none';
         });
@@ -545,8 +664,8 @@
 
       // Info modal
       function openInfo(id){
-        const meta = bankMeta.find(b=>b.id===id);
-        const info = bankInfo[id] || {zauj:[],kampane:[]};
+        const meta = BANK_META[id];
+        const info = (bankInfo[activeFamily] && bankInfo[activeFamily][id]) || {zauj:[],kampane:[]};
         modalTitle.textContent = meta.name;
         modalHead.style.background = meta.color;
         modalHead.style.color = id==='rb' ? '#111' : '#fff';
@@ -558,7 +677,7 @@
 
       function renderCustomPanel(){
         customGrid.innerHTML='';
-        FEATURES.forEach(feature=>{
+        ACCOUNT_FEATURES.forEach(feature=>{
           const item = document.createElement('li');
           const label = document.createElement('label');
           label.className = 'row';
@@ -579,16 +698,28 @@
       }
 
       function updateCustomBtnText(){
-        const selectedCount = FEATURES.filter(feature=>CUSTOM_ROWS[feature.key]).length;
+        const selectedCount = ACCOUNT_FEATURES.filter(feature=>CUSTOM_ROWS[feature.key]).length;
         customCfgBtn.textContent = `Nastaviť riadky (${selectedCount})`;
       }
 
       // Handlers
-      function renderAll(){ renderHead(); renderChips(); renderRowPanel(); renderBody(); updateCustomBtnText(); }
+      function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); updateCustomBtnText(); }
+
+      function switchFamily(familyId){
+        if(!FAMILY_CONFIG[familyId] || familyId===activeFamily) return;
+        activeFamily = familyId;
+        rowSearch.value = '';
+        renderAll();
+      }
+
+      familyTabs.forEach(tab=>{
+        tab.addEventListener('click', ()=>switchFamily(tab.dataset.family));
+      });
 
       productSelect.addEventListener('change', ()=>{
-        customCfgBtn.style.display = productSelect.value==='custom' ? '' : 'none';
-        if(productSelect.value==='senior'){ getBanks().forEach(b=>visibleBanks.set(b.id,true)); }
+        selectedVariantByFamily[activeFamily] = productSelect.value;
+        customCfgBtn.style.display = (getActiveConfig().supportsCustomRows && productSelect.value==='custom') ? '' : 'none';
+        if(activeFamily==='accounts' && productSelect.value==='senior'){ getBanks().forEach(b=>visibleBanks.set(b.id,true)); }
         renderAll();
       });
 
@@ -599,8 +730,8 @@
         rowFilterPanel.style.top  = `${rect.bottom + window.scrollY + 6}px`;
         rowFilterPanel.toggleAttribute('open');
       });
-      rowsAllBtn.addEventListener('click', ()=>{ FEATURES.forEach(f=>visibleRows.set(f.key,true));  renderRowPanel(); applyRowFilters(); });
-      rowsNoneBtn.addEventListener('click', ()=>{ FEATURES.forEach(f=>visibleRows.set(f.key,false)); renderRowPanel(); applyRowFilters(); });
+      rowsAllBtn.addEventListener('click', ()=>{ getActiveFeatures().forEach(f=>getActiveVisibleRows().set(f.key,true));  renderRowPanel(); applyRowFilters(); });
+      rowsNoneBtn.addEventListener('click', ()=>{ getActiveFeatures().forEach(f=>getActiveVisibleRows().set(f.key,false)); renderRowPanel(); applyRowFilters(); });
       rowsCloseBtn.addEventListener('click', ()=> rowFilterPanel.removeAttribute('open'));
       document.addEventListener('click', (e)=>{
         if(rowFilterPanel.hasAttribute('open')){
@@ -611,13 +742,18 @@
 
       printBtn.addEventListener('click', ()=>{
         const ts = new Date().toLocaleString('sk-SK');
-        const label = productSelect.value==='senior' ? 'Senior/Space účet' : (productSelect.value==='custom' ? 'Vlastný produkt' : 'Bežný účet');
-        printCaption.textContent = `Porovnanie – ${label} | Generované: ${ts}`;
+        const familyLabel = getActiveConfig().title;
+        const variantLabel = productSelect.selectedOptions[0] ? productSelect.selectedOptions[0].textContent : '';
+        printCaption.textContent = `Porovnanie – ${familyLabel}${variantLabel ? ` / ${variantLabel}` : ''} | Generované: ${ts}`;
         window.print();
       });
       resetBtn.addEventListener('click', ()=>{
-        bankMeta.forEach(b=>visibleBanks.set(b.id,true));
-        FEATURES.forEach(f=>visibleRows.set(f.key,true));
+        Object.keys(BANK_META).forEach(id=>visibleBanks.set(id,true));
+        Object.keys(FAMILY_CONFIG).forEach(familyId=>{
+          FAMILY_CONFIG[familyId].features.forEach(feature=>visibleRowsByFamily[familyId].set(feature.key,true));
+          selectedVariantByFamily[familyId] = FAMILY_CONFIG[familyId].defaultVariant;
+        });
+        activeFamily = 'accounts';
         rowSearch.value=''; renderAll();
       });
 
@@ -627,12 +763,12 @@
 
       // Custom panel events
       customCfgBtn.addEventListener('click', ()=>{ renderCustomPanel(); customPanel.showModal(); });
-      customAll.addEventListener('click', ()=>{ FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=true); renderCustomPanel(); });
-      customNone.addEventListener('click', ()=>{ FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=false); renderCustomPanel(); });
+      customAll.addEventListener('click', ()=>{ ACCOUNT_FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=true); renderCustomPanel(); });
+      customNone.addEventListener('click', ()=>{ ACCOUNT_FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=false); renderCustomPanel(); });
       customSave.addEventListener('click', ()=>{
         localStorage.setItem(STORAGE_KEYS.customRows, JSON.stringify(CUSTOM_ROWS));
         customPanel.close();
-        if(productSelect.value==='custom') renderBody();
+        if(activeFamily==='accounts' && productSelect.value==='custom') renderBody();
       });
       customClose.addEventListener('click', ()=>customPanel.close());
 
@@ -650,19 +786,21 @@
         return out;
       }
       function createDefaultCustomRows(){
-        return Object.fromEntries(FEATURES.map(f=>[f.key, true]));
+        return Object.fromEntries(ACCOUNT_FEATURES.map(f=>[f.key, true]));
       }
-      function createEmptyBankData(){
+      function createEmptyBankData(familyId){
+        const config = FAMILY_CONFIG[familyId];
         const out = {};
-        bankMeta.forEach(bank=>{
-          out[bank.id] = {};
-          FEATURES.forEach(feature=>{ out[bank.id][feature.key] = '—'; });
+        config.bankIds.forEach(bankId=>{
+          out[bankId] = {};
+          config.features.forEach(feature=>{ out[bankId][feature.key] = '—'; });
         });
         return out;
       }
-      function createEmptyBankInfo(){
+      function createEmptyBankInfo(familyId){
+        const config = FAMILY_CONFIG[familyId];
         const out = {};
-        bankMeta.forEach(bank=>{ out[bank.id] = {zauj:[], kampane:[]}; });
+        config.bankIds.forEach(bankId=>{ out[bankId] = {zauj:[], kampane:[]}; });
         return out;
       }
       function readJsonScript(id, fallback){
@@ -689,46 +827,33 @@
         }catch(_){}
       }
       async function loadRemoteDefaults(){
-        if(BUNDLED) return;
-        if(JS_BUNDLE && location.protocol === 'file:'){
-          applyBundledDefaults(JS_BUNDLE);
+        if(location.protocol === 'file:' && BUNDLED_SOURCE){
+          applyRemoteDefaults(BUNDLED_SOURCE);
           return;
         }
-        const sources = [REMOTE_SOURCE.remoteUrl, REMOTE_SOURCE.fallbackUrl].filter(Boolean);
-        if(!sources.length){
-          if(JS_BUNDLE){
-            applyBundledDefaults(JS_BUNDLE);
+        if(!REMOTE_SOURCE.remoteUrl) throw new Error('Chyba zdroja dát JSON.');
+        try{
+          const remote = await fetchJsonWithTimeout(REMOTE_SOURCE.remoteUrl, REMOTE_SOURCE.timeoutMs || 8000);
+          applyRemoteDefaults(remote);
+        }catch(err){
+          if(BUNDLED_SOURCE){
+            applyRemoteDefaults(BUNDLED_SOURCE);
             return;
           }
-          return;
+          throw err;
         }
-        let remote = null;
-        let lastError = null;
-        for(const sourceUrl of sources){
-          try{
-            remote = await fetchJsonWithTimeout(sourceUrl, REMOTE_SOURCE.timeoutMs || 8000);
-            break;
-          }catch(err){
-            lastError = err;
-          }
-        }
-        if(!remote){
-          if(JS_BUNDLE){
-            applyBundledDefaults(JS_BUNDLE);
-            return;
-          }
-          throw lastError || new Error('Neboli nájdené žiadne dáta.');
-        }
-        applyBundledDefaults(remote);
       }
-      function applyBundledDefaults(payload){
+      function applyRemoteDefaults(payload){
         const source = payload || {};
-        DEFAULT_STANDARD = mergeData(createEmptyBankData(), source.standard || {});
-        DEFAULT_SENIOR   = mergeData(createEmptyBankData(), source.senior || {});
+        DEFAULT_STANDARD = mergeData(createEmptyBankData('accounts'), source.standard || {});
+        DEFAULT_SENIOR   = mergeData(createEmptyBankData('accounts'), source.senior || {});
+        DEFAULT_TRAVEL   = mergeData(createEmptyBankData('travel'), source.travel || {});
         DEFAULT_CUSTOM   = Object.assign(createDefaultCustomRows(), source.customRows || {});
-        bankInfo         = mergeInfo(createEmptyBankInfo(), source.bankInfo || {});
+        bankInfo.accounts = mergeInfo(createEmptyBankInfo('accounts'), source.bankInfo || {});
+        bankInfo.travel   = mergeInfo(createEmptyBankInfo('travel'), source.travelBankInfo || {});
         DATA_STANDARD    = deepClone(DEFAULT_STANDARD);
         DATA_SENIOR      = deepClone(DEFAULT_SENIOR);
+        DATA_TRAVEL      = deepClone(DEFAULT_TRAVEL);
         CUSTOM_ROWS      = deepClone(DEFAULT_CUSTOM);
       }
       async function fetchJsonWithTimeout(url, timeoutMs){
@@ -749,9 +874,9 @@
         try{
           await loadRemoteDefaults();
         }catch(err){
-          console.error('Nepodarilo sa načítať dáta z Gistu.', err);
+          console.error('Nepodarilo sa načítať dáta z JSON súboru.', err);
         }
-        if(!BUNDLED) loadFromStorage();
+        loadFromStorage();
         renderAll();
         updateCustomBtnText();
       }
