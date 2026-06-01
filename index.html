@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač, vlastný produkt</title>
+  <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač</title>
 
   <!-- Lokálny zdroj dát pre otvorenie priamo v prehliadači. -->
   <script src="./rb-konkurencia-data.js"></script>
@@ -85,7 +85,7 @@
     .status-dot[data-state="dirty"]{background:#e67e22}
     .status-dot[data-state="error"]{background:#e74c3c}
 
-    .chip{border:1px solid var(--g-300); background:var(--g-100); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; cursor:pointer; user-select:none; transition:background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition)}
+    .chip{display:inline-flex; align-items:center; justify-content:center; width:132px; border:1px solid var(--g-300); background:var(--g-100); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; text-align:center; cursor:pointer; user-select:none; transition:background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition)}
     .chip[data-active="true"]{box-shadow:0 0 0 2px currentColor inset; color:#111}
     .chip[aria-disabled="true"]{cursor:not-allowed; opacity:.85}
     .chip[data-bank="rb"]{background:var(--rb-yellow); border-color:#E5C200}
@@ -101,17 +101,21 @@
     .chip[data-bank="b365plus"]{background:var(--b365plus); border-color:#2caea2; color:#fff}
     .chip[data-bank="b365"][data-active="true"],.chip[data-bank="b365free"][data-active="true"],.chip[data-bank="b365plus"][data-active="true"]{color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.55) inset}
     .chip[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.12); color:var(--tatrabanka)}
+    .chip.restore-chip{width:auto; min-width:132px; background:#fff; border-style:dashed; color:#444}
+    .chip.restore-chip:hover{border-color:var(--g-500); color:#111}
+    .empty-filter{font-size:12px; color:var(--g-700); padding:0 4px}
 
     .view-intro{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin:0 0 14px}
     .view-copy h1{margin:0 0 4px; font-size:28px; line-height:1.1}
     .view-copy p{margin:0; color:var(--g-700); font-size:14px}
     .view-badge{display:inline-flex; align-items:center; min-height:36px; padding:0 14px; border-radius:999px; background:#fff3bf; border:1px solid #ebd170; font-weight:800; color:#554300}
 
-    .table-card{border:1px solid var(--g-300); border-radius:var(--radius); overflow:hidden; background:#fff; box-shadow:var(--shadow)}
-    .table-scroll{overflow:auto; -webkit-overflow-scrolling:touch}
-    table{width:100%; border-collapse:separate; border-spacing:0; min-width:1120px}
+    .table-card{width:fit-content; max-width:100%; margin:0 auto; border:1px solid var(--g-300); border-radius:var(--radius); overflow:hidden; background:#fff; box-shadow:var(--shadow)}
+    .table-scroll{max-width:100%; overflow:auto; -webkit-overflow-scrolling:touch}
+    table{width:max-content; margin:0; border-collapse:separate; border-spacing:0; min-width:0}
     caption{display:none}
     thead th{position:sticky; top:0; z-index:6; font-weight:900; font-size:13px; text-align:left; padding:12px; border-bottom:2px solid var(--g-300); white-space:nowrap; color:#fff}
+    thead th[data-bank],tbody td[data-bank]{width:148px; min-width:148px; max-width:148px}
     thead th[data-bank="rb"]{background:var(--rb-yellow); color:#111; border-bottom-color:#111; box-shadow:inset 0 -3px 0 #111}
     thead th[data-bank="slsp"]{background:var(--slsp)}
     thead th[data-bank="vub"]{background:var(--vub)}
@@ -127,9 +131,10 @@
 
     tbody td,tbody th{padding:12px; border-bottom:1px solid var(--g-300); vertical-align:top; font-size:14px; background:#fff}
     tbody tr:nth-child(even) td,tbody tr:nth-child(even) th{background:var(--g-100)}
-    .feature-col{position:sticky; left:0; z-index:8; min-width:var(--feature-w); font-weight:900; color:#111; background:inherit; box-shadow:inset -1px 0 0 var(--g-300)}
+    .feature-col{position:sticky; left:0; z-index:8; width:var(--feature-w); min-width:var(--feature-w); max-width:var(--feature-w); font-weight:900; color:#111; background:inherit; box-shadow:inset -1px 0 0 var(--g-300)}
     .rb-sticky{position:sticky; left:var(--feature-w); z-index:7}
     td.rb-featured{background:var(--rb-yellow-weak); border-left:2px solid var(--rb-yellow); box-shadow:inset 0 0 0 9999px rgba(255,212,0,.12); font-weight:800}
+    body[data-family="travel"]{--feature-w:220px}
 
     td[data-bank="slsp"]{background:rgba(var(--slsp-rgb),.05)}
     td[data-bank="vub"]{background:rgba(var(--vub-rgb),.05)}
@@ -227,14 +232,13 @@
           <h1 id="viewTitle">Účty a poplatky</h1>
           <p id="viewHint">Porovnanie osobných účtov a ich variantov v jednej tabuľke.</p>
         </div>
-        <div class="view-badge" id="viewBadge">Rodina: Účty</div>
       </div>
 
       <div class="disclaimer">
         <div style="font-size:18px">ℹ️</div>
         <div id="disclaimerText">
           <b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená.
-          „Senior“ zobrazí len banky, ktoré ho ponúkajú. „Vlastný produkt“ umožní vybrať konkrétne riadky.
+          „Senior“ zobrazí len banky, ktoré majú tento variant účtu dostupný.
         </div>
       </div>
 
@@ -242,7 +246,6 @@
         <div class="control-group" aria-label="Vybrať produkt">
           <label id="productLabel" for="productSelect">Variant</label>
           <select id="productSelect"></select>
-          <button class="btn secondary" id="customCfgBtn" style="display:none">Nastaviť riadky (0)</button>
         </div>
 
         <div class="control-group" aria-label="Filter riadkov" style="position:relative">
@@ -267,6 +270,11 @@
         <div class="control-group" aria-label="Výber bánk">
           <label>Banky:</label>
           <div id="chips" style="display:flex; gap:6px 8px; flex-wrap:wrap"></div>
+        </div>
+
+        <div class="control-group" aria-label="Obnoviť skryté banky">
+          <label>Skryté:</label>
+          <div id="hiddenBanks" style="display:flex; gap:6px 8px; flex-wrap:wrap"></div>
         </div>
 
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap">
@@ -314,32 +322,6 @@
     </div>
   </dialog>
 
-  <!-- Panel pre „Vlastný produkt“ -->
-  <dialog id="customPanel">
-    <div class="card">
-      <div class="card-head" style="background:#000; color:#FFD400">
-        <h3>Vlastný produkt – výber riadkov</h3>
-        <button class="close" id="customClose">Zavrieť</button>
-      </div>
-      <div class="card-body">
-        <div style="margin-bottom:8px; display:flex; gap:8px; flex-wrap:wrap">
-          <button class="btn secondary" id="customAll">Vybrať všetko</button>
-          <button class="btn secondary" id="customNone">Vymazať výber</button>
-          <span class="muted">Uložený výber sa použije, keď v roletke zvolíte „Vlastný produkt“.</span>
-        </div>
-        <div class="lists">
-          <div>
-            <h4>Položky</h4>
-            <ul id="customGrid" style="list-style:none; padding-left:0; display:grid; grid-template-columns:1fr; gap:8px"></ul>
-          </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px">
-          <button class="btn secondary" id="customSave">Uložiť výber</button>
-        </div>
-      </div>
-    </div>
-  </dialog>
-
   <script>
     (function(){
       const BANK_META = {
@@ -363,7 +345,7 @@
           title:'Účty a poplatky',
           hint:'Porovnanie osobných účtov a ich variantov v jednej tabuľke.',
           badge:'Rodina: Účty',
-          disclaimer:'<b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená. „Senior“ zobrazí len banky, ktoré ho ponúkajú. „Vlastný produkt“ umožní vybrať konkrétne riadky.',
+          disclaimer:'<b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená. „Senior“ zobrazí len banky, ktoré majú tento variant účtu dostupný.',
           productLabel:'Produkt',
           searchPlaceholder:'napr. výber, SMS, zahraničí…',
           bankIds:['rb','slsp','vub','csob','unicredit','mbank','prima','postova','b365free','b365plus'],
@@ -386,12 +368,10 @@
           ],
           variants:[
             {value:'standard', label:'Bežný účet', dataKey:'standard'},
-            {value:'senior', label:'Senior/Space účet (62+)', dataKey:'senior'},
-            {value:'custom', label:'Vlastný produkt (výber riadkov)', dataKey:'standard'}
+            {value:'senior', label:'Senior/Space účet (62+)', dataKey:'senior'}
           ],
           defaultVariant:'standard',
-          supportsCustomRows:true,
-          customRowsKey:'customRows',
+          supportsCustomRows:false,
           infoKey:'bankInfo',
           availabilityKey:'monthly_fee'
         },
@@ -463,12 +443,7 @@
       const selectedVariantByFamily = {};
       const visibleRowsByFamily = {};
       const datasets = {};
-      const customRowsByProduct = {};
       const bankInfoByProduct = {};
-
-      const STORAGE_KEYS = {
-        customRowsPrefix:'rb_competition_v3_custom_rows_'
-      };
 
       // UI refs
       const table = document.getElementById('bankTable');
@@ -484,13 +459,13 @@
       const rowsNoneBtn = document.getElementById('rowsNone');
       const rowsCloseBtn = document.getElementById('rowsClose');
       const chipsWrap = document.getElementById('chips');
+      const hiddenBanksWrap = document.getElementById('hiddenBanks');
       const printBtn = document.getElementById('printBtn');
       const resetBtn = document.getElementById('resetBtn');
       const printCaption = document.getElementById('printCaption');
       const familyNav = document.getElementById('familyNav');
       const viewTitle = document.getElementById('viewTitle');
       const viewHint = document.getElementById('viewHint');
-      const viewBadge = document.getElementById('viewBadge');
       const disclaimerText = document.getElementById('disclaimerText');
 
       const infoModal = document.getElementById('infoModal');
@@ -499,14 +474,6 @@
       const modalZauj = document.getElementById('modalZauj');
       const modalKampane = document.getElementById('modalKampane');
       const modalClose = document.getElementById('modalClose');
-
-      const customCfgBtn = document.getElementById('customCfgBtn');
-      const customPanel  = document.getElementById('customPanel');
-      const customGrid   = document.getElementById('customGrid');
-      const customAll    = document.getElementById('customAll');
-      const customNone   = document.getElementById('customNone');
-      const customSave   = document.getElementById('customSave');
-      const customClose  = document.getElementById('customClose');
 
       // Visibility and data
       const visibleBanks = new Map(Object.keys(BANK_META).map(id=>[id,true]));
@@ -523,7 +490,7 @@
         return visibleRowsByFamily[activeFamily];
       }
       function getActiveVariant(){
-        return productSelect.value || selectedVariantByFamily[activeFamily] || getActiveConfig().defaultVariant;
+        return selectedVariantByFamily[activeFamily] || getActiveConfig().defaultVariant;
       }
       function getVariantConfig(familyId, variantValue){
         const config = productsConfig[familyId];
@@ -556,19 +523,18 @@
       }
       function renderViewMeta(){
         const config = getActiveConfig();
+        document.body.dataset.family = activeFamily;
         viewTitle.textContent = config.title;
         viewHint.textContent = config.hint;
-        viewBadge.textContent = config.badge;
         disclaimerText.innerHTML = config.disclaimer;
         productLabel.textContent = config.productLabel;
         rowSearch.placeholder = config.searchPlaceholder;
       }
       function renderProductOptions(){
-        const config = getActiveConfig();
-        const nextValue = selectedVariantByFamily[activeFamily] || config.defaultVariant;
-        productSelect.innerHTML = config.variants.map(variant=>`<option value="${variant.value}">${variant.label}</option>`).join('');
-        productSelect.value = config.variants.some(variant=>variant.value===nextValue) ? nextValue : config.defaultVariant;
-        customCfgBtn.style.display = (config.supportsCustomRows && productSelect.value==='custom') ? '' : 'none';
+        productSelect.innerHTML = Object.entries(productsConfig)
+          .map(([familyId, config])=>`<option value="${familyId}">${config.navLabel || config.title}</option>`)
+          .join('');
+        productSelect.value = activeFamily;
       }
 
       function renderHead(){
@@ -595,10 +561,7 @@
         const prod = getActiveVariant();
         const DATA = getActiveData();
         const banks = getBanks();
-        const customRows = customRowsByProduct[activeFamily] || {};
-
         getActiveFeatures().forEach(f=>{
-          if(getActiveConfig().supportsCustomRows && prod==='custom' && !customRows[f.key]) return;
           const tr = document.createElement('tr');
           tr.dataset.feature = f.key;
           const th = document.createElement('th');
@@ -634,11 +597,33 @@
             chip.addEventListener('click', ()=>{
               const cur = visibleBanks.get(b.id)!==false;
               visibleBanks.set(b.id, !cur);
-              chip.dataset.active = String(!cur);
               syncBankVisibility();
             });
           }
           chipsWrap.appendChild(chip);
+        });
+      }
+      function renderHiddenBankFilters(){
+        hiddenBanksWrap.innerHTML='';
+        const hiddenBanks = getBanks().filter(b=>b.id!=='rb' && visibleBanks.get(b.id)===false);
+        if(!hiddenBanks.length){
+          const empty = document.createElement('span');
+          empty.className = 'empty-filter';
+          empty.textContent = 'žiadne';
+          hiddenBanksWrap.appendChild(empty);
+          return;
+        }
+        hiddenBanks.forEach(b=>{
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'chip restore-chip';
+          chip.textContent = b.name;
+          chip.title = 'Znova zobraziť banku';
+          chip.addEventListener('click', ()=>{
+            visibleBanks.set(b.id, true);
+            syncBankVisibility();
+          });
+          hiddenBanksWrap.appendChild(chip);
         });
       }
       function syncBankVisibility(){
@@ -651,6 +636,7 @@
           const chip = chipsWrap.querySelector(`.chip[data-bank="${b.id}"]`);
           if(chip && b.id!=='rb') chip.dataset.active = String(vis);
         });
+        renderHiddenBankFilters();
       }
 
       // Dočasný filter riadkov
@@ -693,38 +679,8 @@
       }
       function closeInfo(){ infoModal.removeAttribute('open'); }
 
-      function renderCustomPanel(){
-        customGrid.innerHTML='';
-        const customRows = customRowsByProduct.accounts || {};
-        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(feature=>{
-          const item = document.createElement('li');
-          const label = document.createElement('label');
-          label.className = 'row';
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.checked = !!customRows[feature.key];
-          checkbox.addEventListener('change', ()=>{
-            customRows[feature.key] = checkbox.checked;
-            customRowsByProduct.accounts = customRows;
-            updateCustomBtnText();
-          });
-          const span = document.createElement('span');
-          span.textContent = feature.label;
-          label.appendChild(checkbox);
-          label.appendChild(span);
-          item.appendChild(label);
-          customGrid.appendChild(item);
-        });
-      }
-
-      function updateCustomBtnText(){
-        const rows = customRowsByProduct.accounts || {};
-        const selectedCount = (productsConfig.accounts ? productsConfig.accounts.features : []).filter(feature=>rows[feature.key]).length;
-        customCfgBtn.textContent = `Nastaviť riadky (${selectedCount})`;
-      }
-
       // Handlers
-      function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); updateCustomBtnText(); }
+      function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); }
 
       function switchFamily(familyId){
         if(!productsConfig[familyId] || familyId===activeFamily) return;
@@ -734,10 +690,7 @@
       }
 
       productSelect.addEventListener('change', ()=>{
-        selectedVariantByFamily[activeFamily] = productSelect.value;
-        customCfgBtn.style.display = (getActiveConfig().supportsCustomRows && productSelect.value==='custom') ? '' : 'none';
-        if(activeFamily==='accounts' && productSelect.value==='senior'){ getBanks().forEach(b=>visibleBanks.set(b.id,true)); }
-        renderAll();
+        switchFamily(productSelect.value);
       });
 
       rowSearch.addEventListener('input', applyRowFilters);
@@ -760,7 +713,7 @@
       printBtn.addEventListener('click', ()=>{
         const ts = new Date().toLocaleString('sk-SK');
         const familyLabel = getActiveConfig().title;
-        const variantLabel = productSelect.selectedOptions[0] ? productSelect.selectedOptions[0].textContent : '';
+        const variantLabel = '';
         printCaption.textContent = `Porovnanie – ${familyLabel}${variantLabel ? ` / ${variantLabel}` : ''} | Generované: ${ts}`;
         window.print();
       });
@@ -776,28 +729,7 @@
 
       modalClose.addEventListener('click', ()=>infoModal.close());
       infoModal.addEventListener('click', (e)=>{ if(e.target===infoModal) infoModal.close(); });
-      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ infoModal.close(); customPanel.close(); } });
-
-      // Custom panel events
-      customCfgBtn.addEventListener('click', ()=>{ renderCustomPanel(); customPanel.showModal(); });
-      customAll.addEventListener('click', ()=>{
-        const rows = customRowsByProduct.accounts || {};
-        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(f=>rows[f.key]=true);
-        customRowsByProduct.accounts = rows;
-        renderCustomPanel();
-      });
-      customNone.addEventListener('click', ()=>{
-        const rows = customRowsByProduct.accounts || {};
-        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(f=>rows[f.key]=false);
-        customRowsByProduct.accounts = rows;
-        renderCustomPanel();
-      });
-      customSave.addEventListener('click', ()=>{
-        saveCustomRows('accounts');
-        customPanel.close();
-        if(activeFamily==='accounts' && productSelect.value==='custom') renderBody();
-      });
-      customClose.addEventListener('click', ()=>customPanel.close());
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ infoModal.close(); } });
 
       // Utils
       function initializeFamilyState(nextProductsConfig){
@@ -820,10 +752,6 @@
           out[bankId].kampane = Array.isArray(next.kampane) ? next.kampane.slice() : out[bankId].kampane;
         }
         return out;
-      }
-      function createDefaultCustomRows(){
-        const accountConfig = productsConfig.accounts || DEFAULT_PRODUCTS_CONFIG.accounts;
-        return Object.fromEntries(accountConfig.features.map(f=>[f.key, true]));
       }
       function createEmptyBankData(familyId){
         const config = productsConfig[familyId] || DEFAULT_PRODUCTS_CONFIG[familyId];
@@ -857,21 +785,6 @@
         }
         node.textContent = JSON.stringify(payload, null, 2);
       }
-      function loadFromStorage(){
-        try{
-          Object.keys(productsConfig).forEach(familyId=>{
-            const config = productsConfig[familyId];
-            if(!config.supportsCustomRows) return;
-            const storageKey = `${STORAGE_KEYS.customRowsPrefix}${familyId}`;
-            const saved = localStorage.getItem(storageKey);
-            const defaults = customRowsByProduct[familyId] || Object.fromEntries(config.features.map(feature=>[feature.key, true]));
-            customRowsByProduct[familyId] = saved ? Object.assign({}, defaults, JSON.parse(saved)) : defaults;
-          });
-        }catch(_){}
-      }
-      function saveCustomRows(familyId){
-        localStorage.setItem(`${STORAGE_KEYS.customRowsPrefix}${familyId}`, JSON.stringify(customRowsByProduct[familyId] || {}));
-      }
       async function loadRemoteDefaults(){
         if(!BUNDLED_SOURCE) throw new Error('Chyba lokálneho zdroja dát JS.');
         applyRemoteDefaults(BUNDLED_SOURCE);
@@ -898,10 +811,6 @@
           const infoKey = config.infoKey;
           bankInfoByProduct[familyId] = mergeInfo(createEmptyBankInfo(familyId), source[infoKey] || {});
 
-          if(config.supportsCustomRows){
-            const customRowsKey = config.customRowsKey || 'customRows';
-            customRowsByProduct[familyId] = Object.assign(Object.fromEntries(config.features.map(feature=>[feature.key, true])), source[customRowsKey] || {});
-          }
         });
 
         if(!productsConfig[activeFamily]) activeFamily = Object.keys(productsConfig)[0];
@@ -914,9 +823,7 @@
         }catch(err){
           console.error('Nepodarilo sa načítať dáta z JS súboru.', err);
         }
-        loadFromStorage();
         renderAll();
-        updateCustomBtnText();
       }
     })();
   </script>
