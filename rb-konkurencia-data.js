@@ -1,4 +1,71 @@
 window.RB_KONKURENCIA_DATA = {
+  "products": {
+    "loans": {
+      "navLabel": "Pôžičky",
+      "title": "Spotrebiteľské pôžičky",
+      "hint": "Porovnanie poplatkov a základných parametrov bezúčelových pôžičiek medzi bankami.",
+      "badge": "Rodina: Pôžičky",
+      "disclaimer": "<b>Interná pomôcka pre pobočky.</b> Pri pôžičkách sledujeme poplatky v celom cykle úveru, orientačnú výšku úveru a zaujímavé odlišnosti bánk. Neoverené rozsahy úveru ostávajú explicitne označené.",
+      "productLabel": "Variant",
+      "searchPlaceholder": "napr. poskytnutie, splatenie, zostatok…",
+      "supportsCustomRows": false,
+      "defaultVariant": "standard",
+      "bankIds": [
+        "rb",
+        "b365",
+        "slsp",
+        "vub",
+        "unicredit",
+        "prima",
+        "postova",
+        "mbank",
+        "csob"
+      ],
+      "variants": [
+        {
+          "value": "standard",
+          "label": "Štandardné porovnanie",
+          "dataKey": "loans"
+        }
+      ],
+      "features": [
+        {
+          "key": "fee_origination",
+          "label": "Poplatok za poskytnutie pôžičky"
+        },
+        {
+          "key": "fee_contract_change",
+          "label": "Poplatok za zmenu zmluvných podmienok"
+        },
+        {
+          "key": "fee_balance_statement",
+          "label": "Vyčíslenie zostatku / potvrdenie"
+        },
+        {
+          "key": "fee_early_repayment",
+          "label": "Poplatok za predčasné splatenie"
+        },
+        {
+          "key": "extra_payment",
+          "label": "Mimoriadna splátka"
+        },
+        {
+          "key": "cash_installment_payment",
+          "label": "Úhrada splátky v hotovosti"
+        },
+        {
+          "key": "loan_amount_range",
+          "label": "Výška úveru"
+        },
+        {
+          "key": "quirks",
+          "label": "Pikošky / odlišnosti"
+        }
+      ],
+      "infoKey": "loansBankInfo",
+      "availabilityKey": "fee_origination"
+    }
+  },
   "standard": {
     "rb": {
       "monthly_fee": "5,50 €",
@@ -581,6 +648,182 @@ window.RB_KONKURENCIA_DATA = {
       ],
       "kampane": [
         "Travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane."
+      ]
+    }
+  }
+  ,"loans": {
+    "rb": {
+      "fee_origination": "0,00 €",
+      "fee_contract_change": "0,00 €",
+      "fee_balance_statement": "0,00 €",
+      "fee_early_repayment": "0,00 €",
+      "extra_payment": "0,00 €",
+      "cash_installment_payment": "0,00 €",
+      "loan_amount_range": "300 – 40 000 €",
+      "quirks": "bez poplatkov v celom cykle úveru"
+    },
+    "b365": {
+      "fee_origination": "2 % z objemu úveru",
+      "fee_contract_change": "50,00 €",
+      "fee_balance_statement": "20,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "rovnaké ako predčasné splatenie",
+      "cash_installment_payment": "10,00 €",
+      "loan_amount_range": "300 – 40 000 €",
+      "quirks": "štandardné zákonné limity"
+    },
+    "slsp": {
+      "fee_origination": "2 % z výšky úveru (min. 20 €)",
+      "fee_contract_change": "individuálne",
+      "fee_balance_statement": "20,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "rovnaké ako predčasné splatenie",
+      "cash_installment_payment": "cca 8,00 €",
+      "loan_amount_range": "až 40 000 €",
+      "quirks": "balíky, poistenie"
+    },
+    "vub": {
+      "fee_origination": "4 % z objemu úveru",
+      "fee_contract_change": "70,00 €",
+      "fee_balance_statement": "50,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "max. 1 % resp. 0,5 %, bez poplatku do 10 000 €/rok",
+      "cash_installment_payment": "5,00 €",
+      "loan_amount_range": "až 40 000 €",
+      "quirks": "najvyšší vstupný poplatok na trhu"
+    },
+    "unicredit": {
+      "fee_origination": "50,00 €",
+      "fee_contract_change": "35,00 €",
+      "fee_balance_statement": "0,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "rovnaké ako predčasné splatenie",
+      "cash_installment_payment": "2,00 €",
+      "loan_amount_range": "650 – 60 000 €",
+      "quirks": "fixný poplatok namiesto %"
+    },
+    "prima": {
+      "fee_origination": "5 % z objemu úveru",
+      "fee_contract_change": "15,00 €",
+      "fee_balance_statement": "15 – 30 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "bez poplatku do limitu",
+      "cash_installment_payment": "6,00 €",
+      "loan_amount_range": "do 15 000 €",
+      "quirks": "najvyšší poplatok za poskytnutie (5 %)"
+    },
+    "postova": {
+      "fee_origination": "2 % z objemu úveru",
+      "fee_contract_change": "50,00 €",
+      "fee_balance_statement": "20,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %",
+      "extra_payment": "rovnaké ako predčasné splatenie",
+      "cash_installment_payment": "8 – 10 €",
+      "loan_amount_range": "300 – 40 000 €",
+      "quirks": "campaign 0 % pôžičky"
+    },
+    "mbank": {
+      "fee_origination": "0,00 €",
+      "fee_contract_change": "20,00 €",
+      "fee_balance_statement": "11,50 €",
+      "fee_early_repayment": "0,00 € (limit), inak max. 1 %",
+      "extra_payment": "zadarmo do limitu",
+      "cash_installment_payment": "nízke / často zdarma",
+      "loan_amount_range": "až 48 000 €",
+      "quirks": "bez poplatku za poskytnutie aj splatenie"
+    },
+    "csob": {
+      "fee_origination": "50,00 €",
+      "fee_contract_change": "0,00 €",
+      "fee_balance_statement": "0,00 €",
+      "fee_early_repayment": "max. 1 % resp. 0,5 %, bezplatne do 10 000 €/rok",
+      "extra_payment": "bez poplatku do limitu",
+      "cash_installment_payment": "10,00 €",
+      "loan_amount_range": "neuvedené / neoverené",
+      "quirks": "bez poplatkov za potvrdenia a zmeny"
+    }
+  },
+  "loansBankInfo": {
+    "rb": {
+      "zauj": [
+        "Bez poplatku za poskytnutie, zmeny aj predčasné splatenie podľa dodaného porovnania.",
+        "Rozsah úveru 300 – 40 000 € je potvrdený z oficiálnej stránky Parádna pôžička."
+      ],
+      "kampane": [
+        "Aktuálne kampane sledujte v interných materiáloch RB."
+      ]
+    },
+    "b365": {
+      "zauj": [
+        "Rozsah 300 – 40 000 € potvrdený z verejnej stránky 365.bank.",
+        "Štandardný model poplatkov vrátane 2 % za poskytnutie."
+      ],
+      "kampane": [
+        "Kampane k pôžičkám priebežne overujte na webe 365.bank."
+      ]
+    },
+    "slsp": {
+      "zauj": [
+        "Rozsah až 40 000 € potvrdený z oficiálnej stránky Pôžička na čokoľvek.",
+        "Pri zmene zmluvných podmienok zostáva poznámka individuálne."
+      ],
+      "kampane": [
+        "Pred publikovaním si ešte môžeš skontrolovať, či sa nemení akciová sadzba alebo podmienky kampane."
+      ]
+    },
+    "vub": {
+      "zauj": [
+        "Rozsah až 40 000 € potvrdený z verejnej stránky VÚB.",
+        "Najvyšší vstupný poplatok v dodanom porovnaní."
+      ],
+      "kampane": [
+        "Pred publikovaním si ešte skontroluj prípadné časovo obmedzené promo sadzby VÚB."
+      ]
+    },
+    "unicredit": {
+      "zauj": [
+        "Používa fixný poplatok za poskytnutie namiesto percenta.",
+        "Na oficiálnej stránke PRESTO Úver - nové peniaze je v kalkulačke rozsah od 650 € do 60 000 €.",
+        "Ide o bezúčelovú spotrebiteľskú pôžičku, nie o produkt na bývanie."
+      ],
+      "kampane": [
+        "Pred publikovaním si ešte môžeš skontrolovať aktuálnu sadzbu a podmienky priamo v kalkulačke UniCredit."
+      ]
+    },
+    "prima": {
+      "zauj": [
+        "Najvyšší poplatok za poskytnutie v dodanom porovnaní: 5 %.",
+        "Rozsah do 15 000 € potvrdený z oficiálnej stránky Prima banky."
+      ],
+      "kampane": [
+        "Na produktovej stránke je uvedená aj kampaň s vrátením poplatku za poskytnutie pri splnení podmienok."
+      ]
+    },
+    "postova": {
+      "zauj": [
+        "V dátach ostáva poznámka na campaign 0 % pôžičky.",
+        "Na oficiálnej stránke Dobrá pôžička je uvedený rozsah od 300 eur do 40 000 eur."
+      ],
+      "kampane": [
+        "Ak budeš mať konkrétnu kampaň Poštovej banky, dá sa doplniť ako samostatná poznámka."
+      ]
+    },
+    "mbank": {
+      "zauj": [
+        "Rozsah až 48 000 € potvrdený z verejnej stránky mBank.",
+        "Bez poplatku za poskytnutie aj splatenie v dodanom porovnaní."
+      ],
+      "kampane": [
+        "Pri ďalšej aktualizácii sa oplatí dooveriť limit bezplatnej mimoriadnej splátky."
+      ]
+    },
+    "csob": {
+      "zauj": [
+        "Silná stránka sú nulové poplatky za potvrdenia a zmeny v dodaných dátach.",
+        "Rozsah úveru sa zatiaľ nepodarilo spoľahlivo potvrdiť z verejnej stránky."
+      ],
+      "kampane": [
+        "Pri ČSOB ostáva vhodné manuálne dooveriť aktuálnu kalkulačku alebo landing page k pôžičke."
       ]
     }
   }

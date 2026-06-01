@@ -5,13 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač, vlastný produkt</title>
 
-  <!-- Konfigurácia zdroja dát. Očakáva sa JSON v rovnakom priečinku. -->
-  <script id="data-source" type="application/json">
-{
-  "remoteUrl":"./rb-konkurencia-data.json",
-  "timeoutMs":8000
-}
-  </script>
+  <!-- Lokálny zdroj dát pre otvorenie priamo v prehliadači. -->
   <script src="./rb-konkurencia-data.js"></script>
 
   <style>
@@ -20,8 +14,8 @@
       --slsp:#007AC3; --slsp-rgb:0,122,195; --vub:#F36F21; --vub-rgb:243,111,33;
       --csob:#00A3E0; --csob-rgb:0,163,224; --unicredit:#E31837; --unicredit-rgb:227,24,55;
       --mbank:#EA1D2D; --mbank-rgb:234,29,45; --prima:#8CC63F; --prima-rgb:140,198,63;
-      --postova:#FF6F00; --postova-rgb:255,111,0; --b365:#39B54A; --b365-rgb:57,181,74;
-      --b365plus:#009688; --b365plus-rgb:0,150,136; --tatrabanka:#0B4EA2; --tatrabanka-rgb:11,78,162;
+      --postova:#FF6F00; --postova-rgb:255,111,0; --b365:#45dbcc; --b365-rgb:69,219,204;
+      --b365plus:#45dbcc; --b365plus-rgb:69,219,204; --tatrabanka:#0B4EA2; --tatrabanka-rgb:11,78,162;
 
       --g-900:#1A1A1A; --g-700:#4D4D4D; --g-400:#C9C9C9; --g-300:#E6E6E6; --g-200:#F0F0F0; --g-100:#F9F9F9;
       --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.06);
@@ -102,8 +96,10 @@
     .chip[data-bank="mbank"]{background:rgba(var(--mbank-rgb),.12); color:var(--mbank)}
     .chip[data-bank="prima"]{background:rgba(var(--prima-rgb),.14); color:var(--prima)}
     .chip[data-bank="postova"]{background:rgba(var(--postova-rgb),.12); color:var(--postova)}
-    .chip[data-bank="b365free"]{background:rgba(var(--b365-rgb),.12); color:var(--b365)}
-    .chip[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.12); color:var(--b365plus)}
+    .chip[data-bank="b365"]{background:var(--b365); border-color:#2caea2; color:#fff}
+    .chip[data-bank="b365free"]{background:var(--b365); border-color:#2caea2; color:#fff}
+    .chip[data-bank="b365plus"]{background:var(--b365plus); border-color:#2caea2; color:#fff}
+    .chip[data-bank="b365"][data-active="true"],.chip[data-bank="b365free"][data-active="true"],.chip[data-bank="b365plus"][data-active="true"]{color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.55) inset}
     .chip[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.12); color:var(--tatrabanka)}
 
     .view-intro{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin:0 0 14px}
@@ -124,8 +120,9 @@
     thead th[data-bank="mbank"]{background:var(--mbank)}
     thead th[data-bank="prima"]{background:var(--prima)}
     thead th[data-bank="postova"]{background:var(--postova)}
-    thead th[data-bank="b365free"]{background:var(--b365)}
-    thead th[data-bank="b365plus"]{background:var(--b365plus)}
+    thead th[data-bank="b365"]{background:var(--b365); color:#fff; border-bottom-color:#2caea2; box-shadow:inset 0 -3px 0 #2caea2}
+    thead th[data-bank="b365free"]{background:var(--b365); color:#fff; border-bottom-color:#2caea2; box-shadow:inset 0 -3px 0 #2caea2}
+    thead th[data-bank="b365plus"]{background:var(--b365plus); color:#fff; border-bottom-color:#2caea2; box-shadow:inset 0 -3px 0 #2caea2}
     thead th[data-bank="tatrabanka"]{background:var(--tatrabanka)}
 
     tbody td,tbody th{padding:12px; border-bottom:1px solid var(--g-300); vertical-align:top; font-size:14px; background:#fff}
@@ -141,6 +138,7 @@
     td[data-bank="mbank"]{background:rgba(var(--mbank-rgb),.05)}
     td[data-bank="prima"]{background:rgba(var(--prima-rgb),.06)}
     td[data-bank="postova"]{background:rgba(var(--postova-rgb),.05)}
+    td[data-bank="b365"]{background:rgba(var(--b365-rgb),.05)}
     td[data-bank="b365free"]{background:rgba(var(--b365-rgb),.05)}
     td[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.05)}
     td[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.05)}
@@ -214,10 +212,7 @@
         <div class="brand">
 			  <img class="rb-logo" src="logo.png" alt="Raiffeisen Bank" width="176" height="44" decoding="async" loading="eager" fetchpriority="high" />
         </div>
-        <nav class="navlinks" id="familyNav" aria-label="Produktové rodiny">
-          <button type="button" class="navlink-btn" data-family="accounts" data-active="true">Účty</button>
-          <button type="button" class="navlink-btn" data-family="travel" data-active="false">Cestovné poistenie</button>
-        </nav>
+        <nav class="navlinks" id="familyNav" aria-label="Produktové rodiny"></nav>
         <div class="actions">
           <button class="search-btn" aria-label="Hľadať">⌕</button>
         </div>
@@ -356,48 +351,15 @@
         mbank:{id:'mbank', name:'mBank', shortName:'mBank', color:'var(--mbank)'},
         prima:{id:'prima', name:'PRIMA banka', shortName:'PRIMA', color:'var(--prima)'},
         postova:{id:'postova', name:'Poštová banka', shortName:'Poštová', color:'var(--postova)'},
+        b365:{id:'b365', name:'365.banka', shortName:'365.bank', color:'var(--b365)'},
         b365free:{id:'b365free', name:'365.banka – účet zadarmo', shortName:'365 zadarmo', color:'var(--b365)'},
         b365plus:{id:'b365plus', name:'365.banka – účet plus', shortName:'365 plus', color:'var(--b365plus)'},
         tatrabanka:{id:'tatrabanka', name:'Tatra banka', shortName:'Tatra banka', color:'var(--tatrabanka)'}
       };
 
-      const ACCOUNT_FEATURES = [
-        {key:'monthly_fee', label:'Mesačný poplatok za účet'},
-        {key:'deposit_branch', label:'Vklad na pobočke'},
-        {key:'withdraw_branch', label:'Výber na pobočke'},
-        {key:'transfer_branch', label:'Prevod na pobočke'},
-        {key:'foreign_transfer_branch', label:'Prevod na pobočke do zahraničia'},
-        {key:'replacement_card', label:'Vydanie náhradnej karty'},
-        {key:'replacement_pin', label:'Vydanie náhradného PIN‑u'},
-        {key:'atm_other_bank', label:'Výber z cudzieho bankomatu'},
-        {key:'atm_abroad', label:'Výber z bankomatu v zahraničí'},
-        {key:'so_dd_branch', label:'Založenie/zmena/zrušenie TP/inkasa na pobočke'},
-        {key:'so_dd_ib', label:'Zmena/zrušenie TP/inkasa cez IB'},
-        {key:'notifications', label:'Notifikácie (SMS/PUSH)'},
-        {key:'paper_statement', label:'Výpis z účtu poštou'},
-        {key:'discount_50', label:'50% zľava z poplatku'},
-        {key:'discount_100', label:'100% zľava z poplatku'}
-      ];
-
-      const TRAVEL_FEATURES = [
-        {key:'annual_premium', label:'Ročné poistné'},
-        {key:'medical_expenses', label:'Poistenie liečebných nákladov'},
-        {key:'liability', label:'Poistenie zodp. za škodu zdravie / majetok'},
-        {key:'dental_treatment', label:'Dentálne ošetrenie'},
-        {key:'baggage_total_single', label:'Poistenie batožiny celkovo / jeden kus'},
-        {key:'documents_loss', label:'Strata osobných dokladov'},
-        {key:'baggage_delay_flight', label:'Oneskorenie batožiny - cest. lietadlom'},
-        {key:'baggage_loss_flight', label:'Poškodenie alebo strata batožiny - cest. lietadlom'},
-        {key:'flight_delay_cancel', label:'Oneskorenie alebo zrušenie letu'},
-        {key:'mountain_rescue_sr', label:'Zásah horskej služby v SR'},
-        {key:'trip_cancellation', label:'Poistenie storno poplatkov'},
-        {key:'vehicle_assistance', label:'Technická asistencia k vozidlám'},
-        {key:'accident_death_disability', label:'Smrť úrazom / trvalé následky'},
-        {key:'max_age_limit', label:'Vekový limit poistenej osoby max.'}
-      ];
-
-      const FAMILY_CONFIG = {
+      const DEFAULT_PRODUCTS_CONFIG = {
         accounts:{
+          navLabel:'Účty',
           title:'Účty a poplatky',
           hint:'Porovnanie osobných účtov a ich variantov v jednej tabuľke.',
           badge:'Rodina: Účty',
@@ -405,16 +367,36 @@
           productLabel:'Produkt',
           searchPlaceholder:'napr. výber, SMS, zahraničí…',
           bankIds:['rb','slsp','vub','csob','unicredit','mbank','prima','postova','b365free','b365plus'],
-          features:ACCOUNT_FEATURES,
+          features:[
+            {key:'monthly_fee', label:'Mesačný poplatok za účet'},
+            {key:'deposit_branch', label:'Vklad na pobočke'},
+            {key:'withdraw_branch', label:'Výber na pobočke'},
+            {key:'transfer_branch', label:'Prevod na pobočke'},
+            {key:'foreign_transfer_branch', label:'Prevod na pobočke do zahraničia'},
+            {key:'replacement_card', label:'Vydanie náhradnej karty'},
+            {key:'replacement_pin', label:'Vydanie náhradného PIN‑u'},
+            {key:'atm_other_bank', label:'Výber z cudzieho bankomatu'},
+            {key:'atm_abroad', label:'Výber z bankomatu v zahraničí'},
+            {key:'so_dd_branch', label:'Založenie/zmena/zrušenie TP/inkasa na pobočke'},
+            {key:'so_dd_ib', label:'Zmena/zrušenie TP/inkasa cez IB'},
+            {key:'notifications', label:'Notifikácie (SMS/PUSH)'},
+            {key:'paper_statement', label:'Výpis z účtu poštou'},
+            {key:'discount_50', label:'50% zľava z poplatku'},
+            {key:'discount_100', label:'100% zľava z poplatku'}
+          ],
           variants:[
-            {value:'standard', label:'Bežný účet'},
-            {value:'senior', label:'Senior/Space účet (62+)'},
-            {value:'custom', label:'Vlastný produkt (výber riadkov)'}
+            {value:'standard', label:'Bežný účet', dataKey:'standard'},
+            {value:'senior', label:'Senior/Space účet (62+)', dataKey:'senior'},
+            {value:'custom', label:'Vlastný produkt (výber riadkov)', dataKey:'standard'}
           ],
           defaultVariant:'standard',
-          supportsCustomRows:true
+          supportsCustomRows:true,
+          customRowsKey:'customRows',
+          infoKey:'bankInfo',
+          availabilityKey:'monthly_fee'
         },
         travel:{
+          navLabel:'Cestovné poistenie',
           title:'Cestovné poistenie',
           hint:'Porovnanie krytia a limitov cestovného poistenia medzi vybranými bankami.',
           badge:'Rodina: Cestovné poistenie',
@@ -422,27 +404,70 @@
           productLabel:'Variant',
           searchPlaceholder:'napr. batožina, storno, liečebné náklady…',
           bankIds:['vub','slsp','csob','tatrabanka'],
-          features:TRAVEL_FEATURES,
+          features:[
+            {key:'annual_premium', label:'Ročné poistné'},
+            {key:'medical_expenses', label:'Poistenie liečebných nákladov'},
+            {key:'liability', label:'Poistenie zodp. za škodu zdravie / majetok'},
+            {key:'dental_treatment', label:'Dentálne ošetrenie'},
+            {key:'baggage_total_single', label:'Poistenie batožiny celkovo / jeden kus'},
+            {key:'documents_loss', label:'Strata osobných dokladov'},
+            {key:'baggage_delay_flight', label:'Oneskorenie batožiny - cest. lietadlom'},
+            {key:'baggage_loss_flight', label:'Poškodenie alebo strata batožiny - cest. lietadlom'},
+            {key:'flight_delay_cancel', label:'Oneskorenie alebo zrušenie letu'},
+            {key:'mountain_rescue_sr', label:'Zásah horskej služby v SR'},
+            {key:'trip_cancellation', label:'Poistenie storno poplatkov'},
+            {key:'vehicle_assistance', label:'Technická asistencia k vozidlám'},
+            {key:'accident_death_disability', label:'Smrť úrazom / trvalé následky'},
+            {key:'max_age_limit', label:'Vekový limit poistenej osoby max.'}
+          ],
           variants:[
-            {value:'standard', label:'Štandardné porovnanie'}
+            {value:'standard', label:'Štandardné porovnanie', dataKey:'travel'}
           ],
           defaultVariant:'standard',
-          supportsCustomRows:false
+          supportsCustomRows:false,
+          infoKey:'travelBankInfo',
+          availabilityKey:'annual_premium'
+        },
+        loans:{
+          navLabel:'Pôžičky',
+          title:'Spotrebiteľské pôžičky',
+          hint:'Porovnanie poplatkov a základných parametrov bezúčelových pôžičiek medzi bankami.',
+          badge:'Rodina: Pôžičky',
+          disclaimer:'<b>Interná pomôcka pre pobočky.</b> Pri pôžičkách sledujeme poplatky v celom cykle úveru, orientačnú výšku úveru a zaujímavé odlišnosti bánk.',
+          productLabel:'Variant',
+          searchPlaceholder:'napr. poskytnutie, splatenie, zostatok…',
+          bankIds:['rb','b365','slsp','vub','unicredit','prima','postova','mbank','csob'],
+          features:[
+            {key:'fee_origination', label:'Poplatok za poskytnutie pôžičky'},
+            {key:'fee_contract_change', label:'Poplatok za zmenu zmluvných podmienok'},
+            {key:'fee_balance_statement', label:'Vyčíslenie zostatku / potvrdenie'},
+            {key:'fee_early_repayment', label:'Poplatok za predčasné splatenie'},
+            {key:'extra_payment', label:'Mimoriadna splátka'},
+            {key:'cash_installment_payment', label:'Úhrada splátky v hotovosti'},
+            {key:'loan_amount_range', label:'Výška úveru'},
+            {key:'quirks', label:'Pikošky / odlišnosti'}
+          ],
+          variants:[
+            {value:'standard', label:'Štandardné porovnanie', dataKey:'loans'}
+          ],
+          defaultVariant:'standard',
+          supportsCustomRows:false,
+          infoKey:'loansBankInfo',
+          availabilityKey:'fee_origination'
         }
       };
 
-      const REMOTE_SOURCE = readJsonScript('data-source', {remoteUrl:'', timeoutMs:8000});
       const BUNDLED_SOURCE = window.RB_KONKURENCIA_DATA || null;
-      let activeFamily = 'accounts';
-      const selectedVariantByFamily = {accounts:'standard', travel:'standard'};
-
-      let DEFAULT_STANDARD = createEmptyBankData('accounts');
-      let DEFAULT_SENIOR   = createEmptyBankData('accounts');
-      let DEFAULT_TRAVEL   = createEmptyBankData('travel');
-      let DEFAULT_CUSTOM   = createDefaultCustomRows();
+      let productsConfig = deepClone(DEFAULT_PRODUCTS_CONFIG);
+      let activeFamily = Object.keys(productsConfig)[0];
+      const selectedVariantByFamily = {};
+      const visibleRowsByFamily = {};
+      const datasets = {};
+      const customRowsByProduct = {};
+      const bankInfoByProduct = {};
 
       const STORAGE_KEYS = {
-        customRows:'rb_competition_v2_custom_rows'
+        customRowsPrefix:'rb_competition_v3_custom_rows_'
       };
 
       // UI refs
@@ -462,7 +487,7 @@
       const printBtn = document.getElementById('printBtn');
       const resetBtn = document.getElementById('resetBtn');
       const printCaption = document.getElementById('printCaption');
-      const familyTabs = [...document.querySelectorAll('.navlink-btn')];
+      const familyNav = document.getElementById('familyNav');
       const viewTitle = document.getElementById('viewTitle');
       const viewHint = document.getElementById('viewHint');
       const viewBadge = document.getElementById('viewBadge');
@@ -485,21 +510,11 @@
 
       // Visibility and data
       const visibleBanks = new Map(Object.keys(BANK_META).map(id=>[id,true]));
-      const visibleRowsByFamily = {
-        accounts:new Map(ACCOUNT_FEATURES.map(f=>[f.key,true])),
-        travel:new Map(TRAVEL_FEATURES.map(f=>[f.key,true]))
-      };
-      let DATA_STANDARD = deepClone(DEFAULT_STANDARD);
-      let DATA_SENIOR   = deepClone(DEFAULT_SENIOR);
-      let DATA_TRAVEL   = deepClone(DEFAULT_TRAVEL);
-      let CUSTOM_ROWS   = deepClone(DEFAULT_CUSTOM);
-      let bankInfo = {
-        accounts:createEmptyBankInfo('accounts'),
-        travel:createEmptyBankInfo('travel')
-      };
+
+      initializeFamilyState(productsConfig);
 
       function getActiveConfig(){
-        return FAMILY_CONFIG[activeFamily];
+        return productsConfig[activeFamily];
       }
       function getActiveFeatures(){
         return getActiveConfig().features;
@@ -510,20 +525,20 @@
       function getActiveVariant(){
         return productSelect.value || selectedVariantByFamily[activeFamily] || getActiveConfig().defaultVariant;
       }
+      function getVariantConfig(familyId, variantValue){
+        const config = productsConfig[familyId];
+        return config.variants.find(variant=>variant.value===variantValue) || config.variants[0];
+      }
       function getActiveData(){
-        if(activeFamily==='travel') return DATA_TRAVEL;
-        return getActiveVariant()==='senior' ? DATA_SENIOR : DATA_STANDARD;
+        const variantConfig = getVariantConfig(activeFamily, getActiveVariant());
+        return datasets[variantConfig.dataKey] || createEmptyBankData(activeFamily);
       }
       function bankHasProduct(id, product){
-        if(activeFamily==='accounts' && product==='senior'){
-          const d = DATA_SENIOR[id];
-          return !!(d && d.monthly_fee && d.monthly_fee !== '—');
-        }
-        if(activeFamily==='travel'){
-          const d = DATA_TRAVEL[id];
-          return !!(d && d.annual_premium && d.annual_premium !== '—');
-        }
-        return true;
+        const variantConfig = getVariantConfig(activeFamily, product);
+        const dataset = datasets[variantConfig.dataKey] || {};
+        const availabilityKey = getActiveConfig().availabilityKey || (getActiveFeatures()[0] && getActiveFeatures()[0].key);
+        const data = dataset[id];
+        return !!(data && availabilityKey && data[availabilityKey] && data[availabilityKey] !== '—');
       }
       function getBanks(){
         const prod = getActiveVariant();
@@ -533,8 +548,10 @@
           .filter(bank=>prod==='senior' ? bankHasProduct(bank.id,'senior') : bankHasProduct(bank.id, prod));
       }
       function renderFamilyNav(){
-        familyTabs.forEach(tab=>{
-          tab.dataset.active = String(tab.dataset.family === activeFamily);
+        const families = Object.entries(productsConfig);
+        familyNav.innerHTML = families.map(([familyId, config]) => `<button type="button" class="navlink-btn" data-family="${familyId}" data-active="${familyId===activeFamily}">${config.navLabel || config.title}</button>`).join('');
+        familyNav.querySelectorAll('.navlink-btn').forEach(tab=>{
+          tab.addEventListener('click', ()=>switchFamily(tab.dataset.family));
         });
       }
       function renderViewMeta(){
@@ -578,9 +595,10 @@
         const prod = getActiveVariant();
         const DATA = getActiveData();
         const banks = getBanks();
+        const customRows = customRowsByProduct[activeFamily] || {};
 
         getActiveFeatures().forEach(f=>{
-          if(activeFamily==='accounts' && prod==='custom' && !CUSTOM_ROWS[f.key]) return;
+          if(getActiveConfig().supportsCustomRows && prod==='custom' && !customRows[f.key]) return;
           const tr = document.createElement('tr');
           tr.dataset.feature = f.key;
           const th = document.createElement('th');
@@ -665,7 +683,7 @@
       // Info modal
       function openInfo(id){
         const meta = BANK_META[id];
-        const info = (bankInfo[activeFamily] && bankInfo[activeFamily][id]) || {zauj:[],kampane:[]};
+        const info = (bankInfoByProduct[activeFamily] && bankInfoByProduct[activeFamily][id]) || {zauj:[],kampane:[]};
         modalTitle.textContent = meta.name;
         modalHead.style.background = meta.color;
         modalHead.style.color = id==='rb' ? '#111' : '#fff';
@@ -677,15 +695,17 @@
 
       function renderCustomPanel(){
         customGrid.innerHTML='';
-        ACCOUNT_FEATURES.forEach(feature=>{
+        const customRows = customRowsByProduct.accounts || {};
+        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(feature=>{
           const item = document.createElement('li');
           const label = document.createElement('label');
           label.className = 'row';
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
-          checkbox.checked = !!CUSTOM_ROWS[feature.key];
+          checkbox.checked = !!customRows[feature.key];
           checkbox.addEventListener('change', ()=>{
-            CUSTOM_ROWS[feature.key] = checkbox.checked;
+            customRows[feature.key] = checkbox.checked;
+            customRowsByProduct.accounts = customRows;
             updateCustomBtnText();
           });
           const span = document.createElement('span');
@@ -698,7 +718,8 @@
       }
 
       function updateCustomBtnText(){
-        const selectedCount = ACCOUNT_FEATURES.filter(feature=>CUSTOM_ROWS[feature.key]).length;
+        const rows = customRowsByProduct.accounts || {};
+        const selectedCount = (productsConfig.accounts ? productsConfig.accounts.features : []).filter(feature=>rows[feature.key]).length;
         customCfgBtn.textContent = `Nastaviť riadky (${selectedCount})`;
       }
 
@@ -706,15 +727,11 @@
       function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); updateCustomBtnText(); }
 
       function switchFamily(familyId){
-        if(!FAMILY_CONFIG[familyId] || familyId===activeFamily) return;
+        if(!productsConfig[familyId] || familyId===activeFamily) return;
         activeFamily = familyId;
         rowSearch.value = '';
         renderAll();
       }
-
-      familyTabs.forEach(tab=>{
-        tab.addEventListener('click', ()=>switchFamily(tab.dataset.family));
-      });
 
       productSelect.addEventListener('change', ()=>{
         selectedVariantByFamily[activeFamily] = productSelect.value;
@@ -749,11 +766,11 @@
       });
       resetBtn.addEventListener('click', ()=>{
         Object.keys(BANK_META).forEach(id=>visibleBanks.set(id,true));
-        Object.keys(FAMILY_CONFIG).forEach(familyId=>{
-          FAMILY_CONFIG[familyId].features.forEach(feature=>visibleRowsByFamily[familyId].set(feature.key,true));
-          selectedVariantByFamily[familyId] = FAMILY_CONFIG[familyId].defaultVariant;
+        Object.keys(productsConfig).forEach(familyId=>{
+          productsConfig[familyId].features.forEach(feature=>visibleRowsByFamily[familyId].set(feature.key,true));
+          selectedVariantByFamily[familyId] = productsConfig[familyId].defaultVariant;
         });
-        activeFamily = 'accounts';
+        activeFamily = Object.keys(productsConfig)[0];
         rowSearch.value=''; renderAll();
       });
 
@@ -763,16 +780,35 @@
 
       // Custom panel events
       customCfgBtn.addEventListener('click', ()=>{ renderCustomPanel(); customPanel.showModal(); });
-      customAll.addEventListener('click', ()=>{ ACCOUNT_FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=true); renderCustomPanel(); });
-      customNone.addEventListener('click', ()=>{ ACCOUNT_FEATURES.forEach(f=>CUSTOM_ROWS[f.key]=false); renderCustomPanel(); });
+      customAll.addEventListener('click', ()=>{
+        const rows = customRowsByProduct.accounts || {};
+        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(f=>rows[f.key]=true);
+        customRowsByProduct.accounts = rows;
+        renderCustomPanel();
+      });
+      customNone.addEventListener('click', ()=>{
+        const rows = customRowsByProduct.accounts || {};
+        (productsConfig.accounts ? productsConfig.accounts.features : []).forEach(f=>rows[f.key]=false);
+        customRowsByProduct.accounts = rows;
+        renderCustomPanel();
+      });
       customSave.addEventListener('click', ()=>{
-        localStorage.setItem(STORAGE_KEYS.customRows, JSON.stringify(CUSTOM_ROWS));
+        saveCustomRows('accounts');
         customPanel.close();
         if(activeFamily==='accounts' && productSelect.value==='custom') renderBody();
       });
       customClose.addEventListener('click', ()=>customPanel.close());
 
       // Utils
+      function initializeFamilyState(nextProductsConfig){
+        Object.keys(nextProductsConfig).forEach(familyId=>{
+          if(!visibleRowsByFamily[familyId]) visibleRowsByFamily[familyId] = new Map();
+          nextProductsConfig[familyId].features.forEach(feature=>{
+            if(!visibleRowsByFamily[familyId].has(feature.key)) visibleRowsByFamily[familyId].set(feature.key, true);
+          });
+          if(!selectedVariantByFamily[familyId]) selectedVariantByFamily[familyId] = nextProductsConfig[familyId].defaultVariant;
+        });
+      }
       function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
       function mergeData(defs, inc){ const out=deepClone(defs); for(const b in inc){ out[b]=out[b]||{}; for(const k in inc[b]) out[b][k]=inc[b][k]; } return out; }
       function mergeInfo(defs, inc){
@@ -786,10 +822,11 @@
         return out;
       }
       function createDefaultCustomRows(){
-        return Object.fromEntries(ACCOUNT_FEATURES.map(f=>[f.key, true]));
+        const accountConfig = productsConfig.accounts || DEFAULT_PRODUCTS_CONFIG.accounts;
+        return Object.fromEntries(accountConfig.features.map(f=>[f.key, true]));
       }
       function createEmptyBankData(familyId){
-        const config = FAMILY_CONFIG[familyId];
+        const config = productsConfig[familyId] || DEFAULT_PRODUCTS_CONFIG[familyId];
         const out = {};
         config.bankIds.forEach(bankId=>{
           out[bankId] = {};
@@ -798,7 +835,7 @@
         return out;
       }
       function createEmptyBankInfo(familyId){
-        const config = FAMILY_CONFIG[familyId];
+        const config = productsConfig[familyId] || DEFAULT_PRODUCTS_CONFIG[familyId];
         const out = {};
         config.bankIds.forEach(bankId=>{ out[bankId] = {zauj:[], kampane:[]}; });
         return out;
@@ -822,59 +859,60 @@
       }
       function loadFromStorage(){
         try{
-          const cu = localStorage.getItem(STORAGE_KEYS.customRows);
-          if(cu) CUSTOM_ROWS = Object.assign({}, DEFAULT_CUSTOM, JSON.parse(cu));
+          Object.keys(productsConfig).forEach(familyId=>{
+            const config = productsConfig[familyId];
+            if(!config.supportsCustomRows) return;
+            const storageKey = `${STORAGE_KEYS.customRowsPrefix}${familyId}`;
+            const saved = localStorage.getItem(storageKey);
+            const defaults = customRowsByProduct[familyId] || Object.fromEntries(config.features.map(feature=>[feature.key, true]));
+            customRowsByProduct[familyId] = saved ? Object.assign({}, defaults, JSON.parse(saved)) : defaults;
+          });
         }catch(_){}
       }
+      function saveCustomRows(familyId){
+        localStorage.setItem(`${STORAGE_KEYS.customRowsPrefix}${familyId}`, JSON.stringify(customRowsByProduct[familyId] || {}));
+      }
       async function loadRemoteDefaults(){
-        if(location.protocol === 'file:' && BUNDLED_SOURCE){
-          applyRemoteDefaults(BUNDLED_SOURCE);
-          return;
-        }
-        if(!REMOTE_SOURCE.remoteUrl) throw new Error('Chyba zdroja dát JSON.');
-        try{
-          const remote = await fetchJsonWithTimeout(REMOTE_SOURCE.remoteUrl, REMOTE_SOURCE.timeoutMs || 8000);
-          applyRemoteDefaults(remote);
-        }catch(err){
-          if(BUNDLED_SOURCE){
-            applyRemoteDefaults(BUNDLED_SOURCE);
-            return;
-          }
-          throw err;
-        }
+        if(!BUNDLED_SOURCE) throw new Error('Chyba lokálneho zdroja dát JS.');
+        applyRemoteDefaults(BUNDLED_SOURCE);
       }
       function applyRemoteDefaults(payload){
         const source = payload || {};
-        DEFAULT_STANDARD = mergeData(createEmptyBankData('accounts'), source.standard || {});
-        DEFAULT_SENIOR   = mergeData(createEmptyBankData('accounts'), source.senior || {});
-        DEFAULT_TRAVEL   = mergeData(createEmptyBankData('travel'), source.travel || {});
-        DEFAULT_CUSTOM   = Object.assign(createDefaultCustomRows(), source.customRows || {});
-        bankInfo.accounts = mergeInfo(createEmptyBankInfo('accounts'), source.bankInfo || {});
-        bankInfo.travel   = mergeInfo(createEmptyBankInfo('travel'), source.travelBankInfo || {});
-        DATA_STANDARD    = deepClone(DEFAULT_STANDARD);
-        DATA_SENIOR      = deepClone(DEFAULT_SENIOR);
-        DATA_TRAVEL      = deepClone(DEFAULT_TRAVEL);
-        CUSTOM_ROWS      = deepClone(DEFAULT_CUSTOM);
-      }
-      async function fetchJsonWithTimeout(url, timeoutMs){
-        const ctrl = new AbortController();
-        const timer = setTimeout(()=>ctrl.abort(), timeoutMs);
-        try{
-          const res = await fetch(url, {cache:'no-store', signal:ctrl.signal});
-          if(!res.ok) throw new Error(`HTTP ${res.status}`);
-          return await res.json();
-        } finally {
-          clearTimeout(timer);
+        productsConfig = deepClone(DEFAULT_PRODUCTS_CONFIG);
+        if(source.products){
+          Object.keys(source.products).forEach(familyId=>{
+            productsConfig[familyId] = Object.assign({}, productsConfig[familyId] || {}, deepClone(source.products[familyId]));
+          });
         }
-      }
+        initializeFamilyState(productsConfig);
 
+        const datasetKeys = [...new Set(Object.values(productsConfig).flatMap(config=>config.variants.map(variant=>variant.dataKey)))];
+        datasetKeys.forEach(dataKey=>{ delete datasets[dataKey]; });
+        datasetKeys.forEach(dataKey=>{
+          const familyId = Object.keys(productsConfig).find(key=>productsConfig[key].variants.some(variant=>variant.dataKey===dataKey));
+          datasets[dataKey] = mergeData(createEmptyBankData(familyId), source[dataKey] || {});
+        });
+
+        Object.keys(productsConfig).forEach(familyId=>{
+          const config = productsConfig[familyId];
+          const infoKey = config.infoKey;
+          bankInfoByProduct[familyId] = mergeInfo(createEmptyBankInfo(familyId), source[infoKey] || {});
+
+          if(config.supportsCustomRows){
+            const customRowsKey = config.customRowsKey || 'customRows';
+            customRowsByProduct[familyId] = Object.assign(Object.fromEntries(config.features.map(feature=>[feature.key, true])), source[customRowsKey] || {});
+          }
+        });
+
+        if(!productsConfig[activeFamily]) activeFamily = Object.keys(productsConfig)[0];
+      }
       // Init
       init();
       async function init(){
         try{
           await loadRemoteDefaults();
         }catch(err){
-          console.error('Nepodarilo sa načítať dáta z JSON súboru.', err);
+          console.error('Nepodarilo sa načítať dáta z JS súboru.', err);
         }
         loadFromStorage();
         renderAll();
