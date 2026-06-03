@@ -10,7 +10,7 @@
 
   <style>
     :root{
-      --rb-yellow:#FFD400; --rb-yellow-weak:#FFF4B8; --rb-black:#000;
+      --rb-yellow:#fee600; --rb-yellow-weak:#fff7b3; --rb-black:#000;
       --slsp:#007AC3; --slsp-rgb:0,122,195; --vub:#F36F21; --vub-rgb:243,111,33;
       --csob:#00A3E0; --csob-rgb:0,163,224; --unicredit:#E31837; --unicredit-rgb:227,24,55;
       --mbank:#EA1D2D; --mbank-rgb:234,29,45; --prima:#8CC63F; --prima-rgb:140,198,63;
@@ -36,7 +36,7 @@
     .navlinks{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .navlink-btn{display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:0 18px; border:1px solid #d8d1c7; border-radius:999px; background:#f8f4ee; color:#47413a; font-size:14px; font-weight:800; cursor:pointer; transition:background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition)}
     .navlink-btn:hover{transform:translateY(-1px)}
-    .navlink-btn[data-active="true"]{background:var(--rb-yellow); border-color:#d1b100; color:#111}
+    .navlink-btn[data-active="true"]{background:var(--rb-yellow); border-color:#d8c000; color:#111}
     .actions{margin-left:auto; display:flex; align-items:center; gap:12px}
     .search-btn{width:42px; height:42px; border-radius:999px; border:none; background:transparent; font-size:19px; cursor:pointer}
 
@@ -89,7 +89,7 @@
     .chip{display:inline-flex; align-items:center; justify-content:center; width:132px; border:1px solid var(--g-300); background:var(--g-100); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; text-align:center; cursor:pointer; user-select:none; transition:background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition)}
     .chip[data-active="true"]{box-shadow:0 0 0 2px currentColor inset; color:#111}
     .chip[aria-disabled="true"]{cursor:not-allowed; opacity:.85}
-    .chip[data-bank="rb"]{background:var(--rb-yellow); border-color:#E5C200}
+    .chip[data-bank="rb"]{background:var(--rb-yellow); border-color:#d8c000}
     .chip[data-bank="slsp"]{background:rgba(var(--slsp-rgb),.12); color:var(--slsp)}
     .chip[data-bank="vub"]{background:rgba(var(--vub-rgb),.12); color:var(--vub)}
     .chip[data-bank="csob"]{background:rgba(var(--csob-rgb),.12); color:var(--csob)}
@@ -134,7 +134,9 @@
     tbody tr:nth-child(even) td,tbody tr:nth-child(even) th{background:var(--g-100)}
     .feature-col{position:sticky; left:0; z-index:8; width:var(--feature-w); min-width:var(--feature-w); max-width:var(--feature-w); font-weight:900; color:#111; background:inherit; box-shadow:inset -1px 0 0 var(--g-300)}
     .rb-sticky{position:sticky; left:var(--feature-w); z-index:7}
-    td.rb-featured{background:var(--rb-yellow-weak); border-left:2px solid var(--rb-yellow); box-shadow:inset 0 0 0 9999px rgba(255,212,0,.12); font-weight:800}
+    td.rb-featured{background:var(--rb-yellow-weak); border-left:2px solid var(--rb-yellow); box-shadow:inset 0 0 0 9999px rgba(254,230,0,.12); font-weight:800}
+
+    .variant-hidden{display:none}
     body[data-family="travel"]{--feature-w:220px}
 
     td[data-bank="slsp"]{background:rgba(var(--slsp-rgb),.05)}
@@ -251,6 +253,11 @@
         <div class="control-group" aria-label="Vybrať produkt">
           <label id="productLabel" for="productSelect">Variant</label>
           <select id="productSelect"></select>
+        </div>
+
+        <div class="control-group variant-hidden" id="variantGroup" aria-label="Výber variantu účtu">
+          <label id="variantLabel" for="variantSelect">Účet</label>
+          <select id="variantSelect"></select>
         </div>
 
         <div class="control-group" aria-label="Filter riadkov" style="position:relative">
@@ -465,6 +472,8 @@
       const rowsCloseBtn = document.getElementById('rowsClose');
       const chipsWrap = document.getElementById('chips');
       const hiddenBanksWrap = document.getElementById('hiddenBanks');
+      const variantGroup = document.getElementById('variantGroup');
+      const variantSelect = document.getElementById('variantSelect');
       const printBtn = document.getElementById('printBtn');
       const resetBtn = document.getElementById('resetBtn');
       const printCaption = document.getElementById('printCaption');
@@ -540,6 +549,20 @@
           .map(([familyId, config])=>`<option value="${familyId}">${config.navLabel || config.title}</option>`)
           .join('');
         productSelect.value = activeFamily;
+      }
+
+      function renderVariantOptions(){
+        if(activeFamily !== 'accounts'){
+          variantGroup.classList.add('variant-hidden');
+          variantSelect.innerHTML = '';
+          return;
+        }
+        const config = getActiveConfig();
+        variantSelect.innerHTML = config.variants
+          .map(variant=>`<option value="${variant.value}">${variant.label}</option>`)
+          .join('');
+        variantSelect.value = getActiveVariant();
+        variantGroup.classList.remove('variant-hidden');
       }
 
       function renderHead(){
@@ -712,7 +735,7 @@
       function closeInfo(){ infoModal.removeAttribute('open'); }
 
       // Handlers
-      function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); }
+      function renderAll(){ renderFamilyNav(); renderViewMeta(); renderProductOptions(); renderVariantOptions(); renderHead(); renderChips(); renderRowPanel(); renderBody(); }
 
       function switchFamily(familyId){
         if(!productsConfig[familyId] || familyId===activeFamily) return;
@@ -721,8 +744,19 @@
         renderAll();
       }
 
+      function switchVariant(variantValue){
+        if(!productsConfig[activeFamily]) return;
+        const variant = getVariantConfig(activeFamily, variantValue);
+        selectedVariantByFamily[activeFamily] = variant.value;
+        renderAll();
+      }
+
       productSelect.addEventListener('change', ()=>{
         switchFamily(productSelect.value);
+      });
+
+      variantSelect.addEventListener('change', ()=>{
+        switchVariant(variantSelect.value);
       });
 
       rowSearch.addEventListener('input', applyRowFilters);
