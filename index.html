@@ -114,6 +114,25 @@
     .table-card{width:fit-content; max-width:100%; margin:0 auto; border:1px solid var(--g-300); border-radius:var(--radius); overflow:hidden; background:#fff; box-shadow:var(--shadow)}
     .table-scroll{max-width:100%; overflow:auto; -webkit-overflow-scrolling:touch}
     table{width:max-content; margin:0; border-collapse:separate; border-spacing:0; min-width:0}
+    .campaign-grid{display:none; gap:12px; padding:12px; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr))}
+    .campaign-grid[open]{display:grid}
+    .campaign-card{position:relative; overflow:hidden; border:1px solid var(--g-300); border-radius:16px; background:#fff; box-shadow:var(--shadow); padding:14px 14px 14px 20px; display:flex; flex-direction:column; gap:10px; text-align:left; cursor:pointer; transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition)}
+    .campaign-card::before{content:''; position:absolute; inset:0 auto 0 0; width:8px; background:var(--card-accent, var(--g-300))}
+    .campaign-card:hover{transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,.08); border-color:#d9d9d9}
+    .campaign-card-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .campaign-card h3{margin:0; font-size:16px; line-height:1.12}
+    .campaign-card .meta{font-size:12px; color:var(--card-accent, var(--g-700)); font-weight:800; white-space:nowrap}
+    .campaign-section{display:flex; flex-direction:column; gap:6px; padding:12px 12px 12px 14px; border-radius:14px; border:1px solid var(--g-300); background:#fff; box-shadow:inset 4px 0 0 var(--family-accent, var(--g-300))}
+    .campaign-section h4{margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--family-accent, var(--card-accent, var(--g-700)))}
+    .campaign-section ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:13px; line-height:1.35; color:#262626}
+    .campaign-section[data-family="accounts"]{background:rgba(var(--slsp-rgb),.08); border-color:rgba(var(--slsp-rgb),.22); --family-accent:var(--slsp)}
+    .campaign-section[data-family="loans"]{background:rgba(var(--vub-rgb),.08); border-color:rgba(var(--vub-rgb),.22); --family-accent:var(--vub)}
+    .campaign-section[data-family="travel"]{background:rgba(var(--csob-rgb),.08); border-color:rgba(var(--csob-rgb),.22); --family-accent:var(--csob)}
+    .campaign-card .campaign-section[data-family="accounts"]{background:rgba(var(--slsp-rgb),.06)}
+    .campaign-card .campaign-section[data-family="loans"]{background:rgba(var(--vub-rgb),.06)}
+    .campaign-card .campaign-section[data-family="travel"]{background:rgba(var(--csob-rgb),.06)}
+    .campaign-card li{margin:0}
+    .campaign-empty{padding:12px; color:var(--g-700); font-size:13px}
     caption{display:none}
     thead th{position:sticky; top:0; z-index:6; font-weight:900; font-size:13px; text-align:left; padding:12px; border-bottom:2px solid var(--g-300); white-space:nowrap; color:#fff}
     thead th[data-bank],tbody td[data-bank]{width:148px; min-width:148px; max-width:148px}
@@ -170,6 +189,14 @@
     .card-body{padding:14px 16px; display:grid; gap:12px}
     .lists h4{margin:0 0 6px 0; font-size:13px; text-transform:uppercase; letter-spacing:.4px}
     .lists ul{margin:0; padding-left:18px}
+    #modalKampane{list-style:none; padding-left:0; display:flex; flex-direction:column; gap:10px}
+    #modalKampane > li{margin:0}
+    .modal-campaign-section{padding:12px 12px 12px 14px; border-radius:14px; border:1px solid var(--g-300); background:#fff; box-shadow:inset 4px 0 0 var(--family-accent, var(--g-300))}
+    .modal-campaign-section[data-family="accounts"]{background:rgba(var(--slsp-rgb),.08); border-color:rgba(var(--slsp-rgb),.22); --family-accent:var(--slsp)}
+    .modal-campaign-section[data-family="loans"]{background:rgba(var(--vub-rgb),.08); border-color:rgba(var(--vub-rgb),.22); --family-accent:var(--vub)}
+    .modal-campaign-section[data-family="travel"]{background:rgba(var(--csob-rgb),.08); border-color:rgba(var(--csob-rgb),.22); --family-accent:var(--csob)}
+    .modal-campaign-section h5{margin:0 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--family-accent, var(--g-700))}
+    .modal-campaign-section ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px}
     .close{background:#fff; border:1px solid var(--g-300); border-radius:8px; padding:6px 10px; font-weight:800; cursor:pointer}
 
     /* Panel „Vlastný produkt“ */
@@ -306,6 +333,7 @@
             </thead>
             <tbody id="tbody"></tbody>
           </table>
+          <div id="campaignGrid" class="campaign-grid" aria-label="Prehľad kampaní"></div>
         </div>
       </div>
     </div>
@@ -446,6 +474,26 @@
           supportsCustomRows:false,
           infoKey:'loansBankInfo',
           availabilityKey:'fee_origination'
+        },
+        campaigns:{
+          navLabel:'Kampane',
+          title:'Kampane',
+          hint:'Prehľad aktuálnych kampaní naprieč všetkými bankami a produktmi.',
+          badge:'Kampane',
+          disclaimer:'<b>Interná pomôcka pre pobočky.</b> Tu sú zhrnuté aktuálne kampane zo všetkých produktových rodín. Klik na banku zobrazí súhrn kampaní pre konkrétnu banku.',
+          productLabel:'Prehľad',
+          searchPlaceholder:'napr. bonus, akcia, zľava…',
+          bankIds:['rb','slsp','vub','csob','unicredit','mbank','prima','postova','b365','tatrabanka'],
+          features:[
+            {key:'campaigns', label:'Aktuálne kampane'}
+          ],
+          variants:[
+            {value:'all', label:'Všetky kampane', dataKey:'campaigns'}
+          ],
+          defaultVariant:'all',
+          supportsCustomRows:false,
+          infoKey:'campaignsBankInfo',
+          availabilityKey:'campaigns'
         }
       };
 
@@ -474,6 +522,7 @@
       const hiddenBanksWrap = document.getElementById('hiddenBanks');
       const variantGroup = document.getElementById('variantGroup');
       const variantSelect = document.getElementById('variantSelect');
+      const campaignGrid = document.getElementById('campaignGrid');
       const printBtn = document.getElementById('printBtn');
       const resetBtn = document.getElementById('resetBtn');
       const printCaption = document.getElementById('printCaption');
@@ -522,14 +571,22 @@
         return !!(data && availabilityKey && data[availabilityKey] && data[availabilityKey] !== '—');
       }
       function getBanks(){
+        if(activeFamily==='campaigns'){
+          return getActiveConfig().bankIds.map(id=>BANK_META[id]).filter(Boolean);
+        }
         const prod = getActiveVariant();
         return getActiveConfig().bankIds
           .map(id=>BANK_META[id])
           .filter(Boolean)
           .filter(bank=>prod==='senior' ? bankHasProduct(bank.id,'senior') : bankHasProduct(bank.id, prod));
       }
+      function getFamilyOrderIndex(familyId){
+        const order = ['accounts','loans','travel','campaigns'];
+        const idx = order.indexOf(familyId);
+        return idx === -1 ? order.length : idx;
+      }
       function renderFamilyNav(){
-        const families = Object.entries(productsConfig);
+        const families = Object.entries(productsConfig).sort((left,right)=>getFamilyOrderIndex(left[0]) - getFamilyOrderIndex(right[0]));
         familyNav.innerHTML = families.map(([familyId, config]) => `<button type="button" class="navlink-btn" data-family="${familyId}" data-active="${familyId===activeFamily}">${config.navLabel || config.title}</button>`).join('');
         familyNav.querySelectorAll('.navlink-btn').forEach(tab=>{
           tab.addEventListener('click', ()=>switchFamily(tab.dataset.family));
@@ -545,7 +602,7 @@
         rowSearch.placeholder = config.searchPlaceholder;
       }
       function renderProductOptions(){
-        productSelect.innerHTML = Object.entries(productsConfig)
+        productSelect.innerHTML = Object.entries(productsConfig).sort((left,right)=>getFamilyOrderIndex(left[0]) - getFamilyOrderIndex(right[0]))
           .map(([familyId, config])=>`<option value="${familyId}">${config.navLabel || config.title}</option>`)
           .join('');
         productSelect.value = activeFamily;
@@ -568,6 +625,7 @@
       function renderHead(){
         [...tableHead.querySelectorAll('th[data-bank]')].forEach(n=>n.remove());
         const banks = getBanks();
+        if(activeFamily==='campaigns') return;
         banks.forEach(b=>{
           const th = document.createElement('th');
           th.setAttribute('data-bank', b.id);
@@ -584,11 +642,110 @@
         return bank.shortName || bank.name.split(' ')[0];
       }
 
+      function resolveBankAccent(bankId){
+        const bank = BANK_META[bankId];
+        const token = bank && bank.color ? bank.color : 'var(--g-300)';
+        if(token.startsWith('var(')){
+          const cssVar = token.slice(4, -1).trim();
+          return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() || '#d9d9d9';
+        }
+        return token;
+      }
+
+      function normalizeCampaignItems(items){
+        return (Array.isArray(items) ? items : [])
+          .map(item=>String(item || '').trim())
+          .filter(Boolean)
+          .filter(item=>{
+            const lower = item.toLowerCase();
+            return ![
+              'aktuálne kampane sledujte v interných materiáloch rb.',
+              'travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane.',
+              'pred publikovaním si ešte môžeš skontrolovať, či sa nemení akciová sadzba alebo podmienky kampane.',
+              'pred publikovaním si ešte skontroluj prípadné časovo obmedzené promo sadzby vúb.',
+              'ak budeš mať konkrétnu kampaň poštovej banky, dá sa doplniť ako samostatná poznámka.'
+            ].includes(lower);
+          });
+      }
+
       function renderBody(){
         tbody.innerHTML='';
+        const banks = getBanks();
+        if(activeFamily==='campaigns'){
+          table.hidden = true;
+          campaignGrid.setAttribute('open','');
+          campaignGrid.innerHTML = '';
+          banks.forEach(b=>{
+            const campaignSources = [
+              {familyId:'accounts', label:'Účty'},
+              {familyId:'loans', label:'Pôžičky'},
+              {familyId:'travel', label:'Cestovné poistenie'}
+            ];
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'campaign-card';
+            card.addEventListener('click', ()=>openInfo(b.id));
+            card.style.setProperty('--card-accent', resolveBankAccent(b.id));
+            card.dataset.bank = b.id;
+
+            const head = document.createElement('div');
+            head.className = 'campaign-card-head';
+            const title = document.createElement('h3');
+            title.textContent = b.name;
+            const totalCampaigns = campaignSources.reduce((sum, source)=>{
+              const items = normalizeCampaignItems((bankInfoByProduct[source.familyId] && bankInfoByProduct[source.familyId][b.id] && bankInfoByProduct[source.familyId][b.id].kampane) || []);
+              return sum + items.length;
+            }, 0);
+            if(!totalCampaigns) return;
+            head.appendChild(title);
+
+            const sections = document.createElement('div');
+            sections.style.display = 'flex';
+            sections.style.flexDirection = 'column';
+            sections.style.gap = '10px';
+
+            campaignSources.forEach(source=>{
+              const sourceItems = normalizeCampaignItems((bankInfoByProduct[source.familyId] && bankInfoByProduct[source.familyId][b.id] && bankInfoByProduct[source.familyId][b.id].kampane) || []);
+              if(!sourceItems.length) return;
+              const section = document.createElement('div');
+              section.className = 'campaign-section';
+              const sectionHead = document.createElement('h4');
+              sectionHead.textContent = source.label;
+              const list = document.createElement('ul');
+              sourceItems.slice(0,3).forEach(item=>{
+                const li = document.createElement('li');
+                li.textContent = item;
+                list.appendChild(li);
+              });
+              if(sourceItems.length > 3){
+                const li = document.createElement('li');
+                li.textContent = `+ ${sourceItems.length - 3} ďalšie kampane`;
+                list.appendChild(li);
+              }
+              section.appendChild(sectionHead);
+              section.appendChild(list);
+              sections.appendChild(section);
+            });
+
+            if(!sections.children.length){
+              const empty = document.createElement('div');
+              empty.className = 'campaign-empty';
+              empty.textContent = 'Aktuálne bez kampane v produktoch Pôžičky a Cestovné poistenie.';
+              sections.appendChild(empty);
+            }
+
+            card.appendChild(head);
+            card.appendChild(sections);
+            campaignGrid.appendChild(card);
+          });
+          syncBankVisibility();
+          applyRowFilters();
+          return;
+        }
+        table.hidden = false;
+        campaignGrid.removeAttribute('open');
         const prod = getActiveVariant();
         const DATA = getActiveData();
-        const banks = getBanks();
         getActiveFeatures().forEach(f=>{
           const tr = document.createElement('tr');
           tr.dataset.feature = f.key;
@@ -724,12 +881,27 @@
       // Info modal
       function openInfo(id){
         const meta = BANK_META[id];
-        const info = (bankInfoByProduct[activeFamily] && bankInfoByProduct[activeFamily][id]) || {zauj:[],kampane:[]};
+        const infoFamily = activeFamily === 'campaigns' ? 'campaigns' : activeFamily;
+        const info = (bankInfoByProduct[infoFamily] && bankInfoByProduct[infoFamily][id]) || {zauj:[],kampane:[]};
         modalTitle.textContent = meta.name;
         modalHead.style.background = meta.color;
         modalHead.style.color = id==='rb' ? '#111' : '#fff';
         modalZauj.innerHTML = info.zauj.length ? info.zauj.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
-        modalKampane.innerHTML = info.kampane.length ? info.kampane.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
+        if(activeFamily === 'campaigns'){
+          const campaignFamilies = [
+            {familyId:'accounts', label:'Účty'},
+            {familyId:'loans', label:'Pôžičky'},
+            {familyId:'travel', label:'Cestovné poistenie'}
+          ];
+          const parts = campaignFamilies.map(source=>{
+            const items = normalizeCampaignItems((bankInfoByProduct[source.familyId] && bankInfoByProduct[source.familyId][id] && bankInfoByProduct[source.familyId][id].kampane) || []);
+            if(!items.length) return '';
+            return `<li><div class="modal-campaign-section" data-family="${source.familyId}"><h5>${source.label}</h5><ul>${items.map(item=>`<li>${item}</li>`).join('')}</ul></div></li>`;
+          }).filter(Boolean);
+          modalKampane.innerHTML = parts.length ? parts.join('') : '<li>—</li>';
+        }else{
+          modalKampane.innerHTML = info.kampane.length ? info.kampane.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
+        }
         infoModal.setAttribute('open','');
       }
       function closeInfo(){ infoModal.removeAttribute('open'); }
@@ -836,6 +1008,43 @@
         config.bankIds.forEach(bankId=>{ out[bankId] = {zauj:[], kampane:[]}; });
         return out;
       }
+      function buildCampaignBankInfo(){
+        const out = createEmptyBankInfo('campaigns');
+        Object.entries(bankInfoByProduct.accounts || {}).forEach(([bankId, info])=>{
+          if(!out[bankId]) out[bankId] = {zauj:[], kampane:[]};
+          if(Array.isArray(info.zauj)) out[bankId].zauj.push(...normalizeCampaignItems(info.zauj));
+          if(Array.isArray(info.kampane)) out[bankId].kampane.push(...normalizeCampaignItems(info.kampane));
+        });
+        Object.keys(out).forEach(bankId=>{
+          out[bankId].zauj = [...new Set(out[bankId].zauj.filter(Boolean))];
+          out[bankId].kampane = [...new Set(out[bankId].kampane.filter(Boolean))];
+        });
+        return out;
+      }
+      function buildCampaignDetailInfo(){
+        const out = createEmptyBankInfo('campaigns');
+        ['accounts','loans','travel'].forEach(familyId=>{
+          Object.entries(bankInfoByProduct[familyId] || {}).forEach(([bankId, info])=>{
+            if(!out[bankId]) out[bankId] = {zauj:[], kampane:[]};
+            if(Array.isArray(info.zauj)) out[bankId].zauj.push(...normalizeCampaignItems(info.zauj));
+            if(Array.isArray(info.kampane)) out[bankId].kampane.push(...normalizeCampaignItems(info.kampane));
+          });
+        });
+        Object.keys(out).forEach(bankId=>{
+          out[bankId].zauj = [...new Set(out[bankId].zauj.filter(Boolean))];
+          out[bankId].kampane = [...new Set(out[bankId].kampane.filter(Boolean))];
+        });
+        return out;
+      }
+      function buildCampaignData(){
+        const out = createEmptyBankData('campaigns');
+        const aggregatedInfo = buildCampaignBankInfo();
+        Object.keys(out).forEach(bankId=>{
+          const info = aggregatedInfo[bankId] || {kampane:[]};
+          out[bankId].campaigns = info.kampane.length ? info.kampane.join(' · ') : '—';
+        });
+        return out;
+      }
       function readJsonScript(id, fallback){
         const node = document.getElementById(id);
         if(!node) return fallback;
@@ -880,6 +1089,11 @@
           bankInfoByProduct[familyId] = mergeInfo(createEmptyBankInfo(familyId), source[infoKey] || {});
 
         });
+
+        if(productsConfig.campaigns){
+          bankInfoByProduct.campaigns = mergeInfo(buildCampaignBankInfo(), source.campaignsBankInfo || {});
+          datasets.campaigns = mergeData(buildCampaignData(), source.campaigns || {});
+        }
 
         if(!productsConfig[activeFamily]) activeFamily = Object.keys(productsConfig)[0];
       }

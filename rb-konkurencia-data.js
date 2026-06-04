@@ -498,9 +498,14 @@ window.RB_KONKURENCIA_DATA = {
       "zauj": [
         "RB stĺpec je sticky a zvýraznený."
       ],
-      "kampane": [
-        "Aktuálne kampane sledujte v interných materiáloch RB."
-      ]
+      "kampane": []
+    },
+    "b365": {
+      "zauj": [
+        "Účet zadarmo od 365.bank.",
+        "Účet plus za 5,90 € mesačne."
+      ],
+      "kampane": []
     },
     "slsp": {
       "zauj": [
@@ -613,15 +618,22 @@ window.RB_KONKURENCIA_DATA = {
       ]
     }
   },
+  "campaignsBankInfo": {
+    "b365": {
+      "zauj": [],
+      "kampane": [
+        "Chceš Účet zadarmo od 365? Nie je problém.",
+        "Hľadáš niečo extra s parádnymi výhodami? Máme aj Účet plus za 5,90 € mesačne."
+      ]
+    }
+  },
   "travelBankInfo": {
     "vub": {
       "zauj": [
         "Najnižšie ročné poistné v dodanom porovnaní.",
         "Silné liečebné náklady a zásah horskej služby, bez storna a asistencie k vozidlám."
       ],
-      "kampane": [
-        "Travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane."
-      ]
+      "kampane": []
     },
     "slsp": {
       "zauj": [
@@ -629,7 +641,7 @@ window.RB_KONKURENCIA_DATA = {
         "Obsahuje krytie straty dokladov aj technickú asistenciu k vozidlám."
       ],
       "kampane": [
-        "Travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane."
+        "Celoročné cestovné poistenie do celého sveta za nízky ročný poplatok."
       ]
     },
     "csob": {
@@ -637,18 +649,14 @@ window.RB_KONKURENCIA_DATA = {
         "Bez limitu veku v dodanom porovnaní.",
         "Silné krytie horskej služby a asistencie, slabšie doplnkové letové benefity."
       ],
-      "kampane": [
-        "Travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane."
-      ]
+      "kampane": []
     },
     "tatrabanka": {
       "zauj": [
         "Najširšie pokrytie batožiny v priloženom porovnaní.",
         "Bez vekového limitu a ako jediná má v zdroji vyznačené storno poplatky."
       ],
-      "kampane": [
-        "Travel porovnanie je doplnené z interného prehľadu, bez samostatnej kampane."
-      ]
+      "kampane": []
     }
   }
   ,"loans": {
@@ -749,26 +757,22 @@ window.RB_KONKURENCIA_DATA = {
         "Bez poplatku za poskytnutie, zmeny aj predčasné splatenie podľa dodaného porovnania.",
         "Rozsah úveru 300 – 40 000 € je potvrdený z oficiálnej stránky Parádna pôžička."
       ],
-      "kampane": [
-        "Aktuálne kampane sledujte v interných materiáloch RB."
-      ]
+      "kampane": []
     },
     "b365": {
       "zauj": [
         "Rozsah 300 – 40 000 € potvrdený z verejnej stránky 365.bank.",
         "Štandardný model poplatkov vrátane 2 % za poskytnutie."
       ],
-      "kampane": [
-        "Kampane k pôžičkám priebežne overujte na webe 365.bank."
-      ]
+      "kampane": []
     },
     "slsp": {
       "zauj": [
-        "Rozsah až 40 000 € potvrdený z oficiálnej stránky Pôžička na čokoľvek.",
-        "Pri zmene zmluvných podmienok zostáva poznámka individuálne."
+        "Rozsah až 40 000 € potvrdený z oficiálnej stránky Pôžička na čokoľvek."
       ],
       "kampane": [
-        "Pred publikovaním si ešte môžeš skontrolovať, či sa nemení akciová sadzba alebo podmienky kampane."
+        "Pôžička na čokoľvek teraz s úrokom od 4,99 % ročne.",
+        "50 % zľava z poplatku za poskytnutie úveru."
       ]
     },
     "vub": {
@@ -777,7 +781,9 @@ window.RB_KONKURENCIA_DATA = {
         "Najvyšší vstupný poplatok v dodanom porovnaní."
       ],
       "kampane": [
-        "Pred publikovaním si ešte skontroluj prípadné časovo obmedzené promo sadzby VÚB."
+        "Zelená pôžička pre eko - technológie.",
+        "100 % zľava z poplatku za poskytnutie úveru len do 30.6.2026.",
+        "od 5,90 % p.a"
       ]
     },
     "unicredit": {
@@ -786,26 +792,22 @@ window.RB_KONKURENCIA_DATA = {
         "Na oficiálnej stránke PRESTO Úver - nové peniaze je v kalkulačke rozsah od 650 € do 60 000 €.",
         "Ide o bezúčelovú spotrebiteľskú pôžičku, nie o produkt na bývanie."
       ],
-      "kampane": [
-        "Pred publikovaním si ešte môžeš skontrolovať aktuálnu sadzbu a podmienky priamo v kalkulačke UniCredit."
-      ]
+      "kampane": []
     },
     "prima": {
       "zauj": [
         "Najvyšší poplatok za poskytnutie v dodanom porovnaní: 5 %.",
         "Rozsah do 15 000 € potvrdený z oficiálnej stránky Prima banky."
       ],
-      "kampane": [
-        "Na produktovej stránke je uvedená aj kampaň s vrátením poplatku za poskytnutie pri splnení podmienok."
-      ]
+      "kampane": []
     },
     "postova": {
       "zauj": [
-        "V dátach ostáva poznámka na campaign 0 % pôžičky.",
         "Na oficiálnej stránke Dobrá pôžička je uvedený rozsah od 300 eur do 40 000 eur."
       ],
       "kampane": [
-        "Ak budeš mať konkrétnu kampaň Poštovej banky, dá sa doplniť ako samostatná poznámka."
+        "Úrok už od 5,9 % ročne nielen na refinancovanie.",
+        "Prenesením úverov k nám môžete ušetriť mesačne aj desiatky eur."
       ]
     },
     "mbank": {
@@ -813,18 +815,14 @@ window.RB_KONKURENCIA_DATA = {
         "Rozsah až 48 000 € potvrdený z verejnej stránky mBank.",
         "Bez poplatku za poskytnutie aj splatenie v dodanom porovnaní."
       ],
-      "kampane": [
-        "Pri ďalšej aktualizácii sa oplatí dooveriť limit bezplatnej mimoriadnej splátky."
-      ]
+      "kampane": []
     },
     "csob": {
       "zauj": [
         "Silná stránka sú nulové poplatky za potvrdenia a zmeny v dodaných dátach.",
         "Rozsah úveru sa zatiaľ nepodarilo spoľahlivo potvrdiť z verejnej stránky."
       ],
-      "kampane": [
-        "Pri ČSOB ostáva vhodné manuálne dooveriť aktuálnu kalkulačku alebo landing page k pôžičke."
-      ]
+      "kampane": []
     }
   }
 };
