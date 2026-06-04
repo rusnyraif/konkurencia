@@ -763,7 +763,9 @@ window.RB_KONKURENCIA_DATA = {
         "Aktualizácia sadzieb podľa podkladu 06/2026.",
         "Najvyššia sadzba v dodanom podklade je pri 36M viazanosti 2,60 %."
       ],
-      "kampane": []
+      "kampane": [
+        "Kampaň od 01.04. do 31.10.2026."
+      ]
     },
     "vub": {
       "zauj": [
@@ -781,7 +783,9 @@ window.RB_KONKURENCIA_DATA = {
       "zauj": [
         "Postupný rast sadzby od 1,60 % do 2,00 % pri dlhšej viazanosti."
       ],
-      "kampane": []
+      "kampane": [
+        "S účtom sú sadzby o 1 % vyššie."
+      ]
     },
     "b365": {
       "zauj": [
@@ -793,7 +797,9 @@ window.RB_KONKURENCIA_DATA = {
       "zauj": [
         "Stabilná sadzba 2,45 % naprieč všetkými tromi viazanosťami."
       ],
-      "kampane": []
+      "kampane": [
+        "4 % na kombi pri 6-mesačnej viazanosti."
+      ]
     },
     "unicredit": {
       "zauj": [

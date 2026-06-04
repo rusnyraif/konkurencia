@@ -688,6 +688,7 @@
             const campaignSources = [
               {familyId:'accounts', label:'Účty'},
               {familyId:'loans', label:'Pôžičky'},
+              {familyId:'termDeposits', label:'Viazané vklady'},
               {familyId:'travel', label:'Cestovné poistenie'}
             ];
             const card = document.createElement('button');
@@ -739,7 +740,7 @@
             if(!sections.children.length){
               const empty = document.createElement('div');
               empty.className = 'campaign-empty';
-              empty.textContent = 'Aktuálne bez kampane v produktoch Pôžičky a Cestovné poistenie.';
+              empty.textContent = 'Aktuálne bez kampaní v dostupných produktových rodinách.';
               sections.appendChild(empty);
             }
 
@@ -900,6 +901,7 @@
           const campaignFamilies = [
             {familyId:'accounts', label:'Účty'},
             {familyId:'loans', label:'Pôžičky'},
+            {familyId:'termDeposits', label:'Viazané vklady'},
             {familyId:'travel', label:'Cestovné poistenie'}
           ];
           const parts = campaignFamilies.map(source=>{
@@ -1019,10 +1021,12 @@
       }
       function buildCampaignBankInfo(){
         const out = createEmptyBankInfo('campaigns');
-        Object.entries(bankInfoByProduct.accounts || {}).forEach(([bankId, info])=>{
-          if(!out[bankId]) out[bankId] = {zauj:[], kampane:[]};
-          if(Array.isArray(info.zauj)) out[bankId].zauj.push(...normalizeCampaignItems(info.zauj));
-          if(Array.isArray(info.kampane)) out[bankId].kampane.push(...normalizeCampaignItems(info.kampane));
+        ['accounts','loans','termDeposits','travel'].forEach(familyId=>{
+          Object.entries(bankInfoByProduct[familyId] || {}).forEach(([bankId, info])=>{
+            if(!out[bankId]) out[bankId] = {zauj:[], kampane:[]};
+            if(Array.isArray(info.zauj)) out[bankId].zauj.push(...normalizeCampaignItems(info.zauj));
+            if(Array.isArray(info.kampane)) out[bankId].kampane.push(...normalizeCampaignItems(info.kampane));
+          });
         });
         Object.keys(out).forEach(bankId=>{
           out[bankId].zauj = [...new Set(out[bankId].zauj.filter(Boolean))];
@@ -1032,7 +1036,7 @@
       }
       function buildCampaignDetailInfo(){
         const out = createEmptyBankInfo('campaigns');
-        ['accounts','loans','travel'].forEach(familyId=>{
+        ['accounts','loans','termDeposits','travel'].forEach(familyId=>{
           Object.entries(bankInfoByProduct[familyId] || {}).forEach(([bankId, info])=>{
             if(!out[bankId]) out[bankId] = {zauj:[], kampane:[]};
             if(Array.isArray(info.zauj)) out[bankId].zauj.push(...normalizeCampaignItems(info.zauj));
