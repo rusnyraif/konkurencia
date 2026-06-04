@@ -64,6 +64,52 @@ window.RB_KONKURENCIA_DATA = {
       ],
       "infoKey": "loansBankInfo",
       "availabilityKey": "fee_origination"
+    },
+    "termDeposits": {
+      "navLabel": "Viazané vklady",
+      "title": "Viazané vklady",
+      "hint": "Porovnanie úrokových sadzieb viazaných vkladov podľa doby viazanosti. Aktualizácia 06/2026.",
+      "badge": "Rodina: Viazané vklady",
+      "disclaimer": "<b>Interná pomôcka pre pobočky.</b> V tabuľke sú orientačné sadzby viazaných vkladov podľa dodaného podkladu 06/2026. Hodnoty treba pri komunikácii s klientom vždy preveriť v aktuálnom sadzobníku konkrétnej banky.",
+      "productLabel": "Produkt",
+      "searchPlaceholder": "napr. 12M, 24M, 36M…",
+      "supportsCustomRows": false,
+      "defaultVariant": "standard",
+      "bankIds": [
+        "slsp",
+        "vub",
+        "tatrabanka",
+        "prima",
+        "b365",
+        "csob",
+        "unicredit",
+        "jt",
+        "mbank",
+        "fio"
+      ],
+      "variants": [
+        {
+          "value": "standard",
+          "label": "Štandardné porovnanie",
+          "dataKey": "termDeposits"
+        }
+      ],
+      "features": [
+        {
+          "key": "term_12m",
+          "label": "12 mes."
+        },
+        {
+          "key": "term_24m",
+          "label": "24 mes."
+        },
+        {
+          "key": "term_36m",
+          "label": "36 mes."
+        }
+      ],
+      "infoKey": "termDepositsBankInfo",
+      "availabilityKey": "term_12m"
     }
   },
   "standard": {
@@ -476,6 +522,58 @@ window.RB_KONKURENCIA_DATA = {
       "max_age_limit": "bez limitu"
     }
   },
+  "termDeposits": {
+    "slsp": {
+      "term_12m": "2,30 %",
+      "term_24m": "2,50 %",
+      "term_36m": "2,60 %"
+    },
+    "vub": {
+      "term_12m": "1,30 %",
+      "term_24m": "1,60 %",
+      "term_36m": "1,80 %"
+    },
+    "tatrabanka": {
+      "term_12m": "2,50 %",
+      "term_24m": "2,50 %",
+      "term_36m": "2,50 %"
+    },
+    "prima": {
+      "term_12m": "1,60 %",
+      "term_24m": "1,80 %",
+      "term_36m": "2,00 %"
+    },
+    "b365": {
+      "term_12m": "2,00 %",
+      "term_24m": "2,00 %",
+      "term_36m": "—"
+    },
+    "csob": {
+      "term_12m": "2,45 %",
+      "term_24m": "2,45 %",
+      "term_36m": "2,45 %"
+    },
+    "unicredit": {
+      "term_12m": "2,05 %",
+      "term_24m": "—",
+      "term_36m": "—"
+    },
+    "jt": {
+      "term_12m": "3,00 %",
+      "term_24m": "3,20 %",
+      "term_36m": "3,20 %"
+    },
+    "mbank": {
+      "term_12m": "0,10 %",
+      "term_24m": "—",
+      "term_36m": "—"
+    },
+    "fio": {
+      "term_12m": "2,00 %",
+      "term_24m": "1,50 %",
+      "term_36m": "1,60 %"
+    }
+  },
   "customRows": {
     "monthly_fee": true,
     "deposit_branch": true,
@@ -655,6 +753,69 @@ window.RB_KONKURENCIA_DATA = {
       "zauj": [
         "Najširšie pokrytie batožiny v priloženom porovnaní.",
         "Bez vekového limitu a ako jediná má v zdroji vyznačené storno poplatky."
+      ],
+      "kampane": []
+    }
+  },
+  "termDepositsBankInfo": {
+    "slsp": {
+      "zauj": [
+        "Aktualizácia sadzieb podľa podkladu 06/2026.",
+        "Najvyššia sadzba v dodanom podklade je pri 36M viazanosti 2,60 %."
+      ],
+      "kampane": []
+    },
+    "vub": {
+      "zauj": [
+        "Sadzby rastú s dlhšou viazanosťou od 1,30 % do 1,80 %."
+      ],
+      "kampane": []
+    },
+    "tatrabanka": {
+      "zauj": [
+        "Rovnaká sadzba 2,50 % pri 12M, 24M aj 36M podľa dodaného prehľadu."
+      ],
+      "kampane": []
+    },
+    "prima": {
+      "zauj": [
+        "Postupný rast sadzby od 1,60 % do 2,00 % pri dlhšej viazanosti."
+      ],
+      "kampane": []
+    },
+    "b365": {
+      "zauj": [
+        "V podklade sú uvedené sadzby pre 12M a 24M, 36M chýba."
+      ],
+      "kampane": []
+    },
+    "csob": {
+      "zauj": [
+        "Stabilná sadzba 2,45 % naprieč všetkými tromi viazanosťami."
+      ],
+      "kampane": []
+    },
+    "unicredit": {
+      "zauj": [
+        "V dodanom podklade je uvedená len 12M viazanosť so sadzbou 2,05 %."
+      ],
+      "kampane": []
+    },
+    "jt": {
+      "zauj": [
+        "Najvyššie sadzby v porovnaní: 3,00 % pri 12M a 3,20 % pri 24M a 36M."
+      ],
+      "kampane": []
+    },
+    "mbank": {
+      "zauj": [
+        "V podklade je uvedená len 12M viazanosť so sadzbou 0,10 %."
+      ],
+      "kampane": []
+    },
+    "fio": {
+      "zauj": [
+        "Sadzba je najvyššia pri 12M, pri dlhších viazanostiach klesá na 1,50 % a 1,60 %."
       ],
       "kampane": []
     }

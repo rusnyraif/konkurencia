@@ -16,6 +16,7 @@
       --mbank:#EA1D2D; --mbank-rgb:234,29,45; --prima:#8CC63F; --prima-rgb:140,198,63;
       --postova:#FF6F00; --postova-rgb:255,111,0; --b365:#45dbcc; --b365-rgb:69,219,204;
       --b365plus:#45dbcc; --b365plus-rgb:69,219,204; --tatrabanka:#0B4EA2; --tatrabanka-rgb:11,78,162;
+      --jt:#8B715C; --jt-rgb:139,113,92; --fio:#00458A; --fio-rgb:0,69,138;
 
       --g-900:#1A1A1A; --g-700:#4D4D4D; --g-400:#C9C9C9; --g-300:#E6E6E6; --g-200:#F0F0F0; --g-100:#F9F9F9;
       --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.06);
@@ -102,6 +103,8 @@
     .chip[data-bank="b365plus"]{background:var(--b365plus); border-color:#2caea2; color:#fff}
     .chip[data-bank="b365"][data-active="true"],.chip[data-bank="b365free"][data-active="true"],.chip[data-bank="b365plus"][data-active="true"]{color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.55) inset}
     .chip[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.12); color:var(--tatrabanka)}
+    .chip[data-bank="jt"]{background:rgba(var(--jt-rgb),.12); color:var(--jt)}
+    .chip[data-bank="fio"]{background:rgba(var(--fio-rgb),.12); color:var(--fio)}
     .chip.restore-chip{width:auto; min-width:132px; background:#fff; border-style:dashed; color:#444}
     .chip.restore-chip:hover{border-color:var(--g-500); color:#111}
     .empty-filter{font-size:12px; color:var(--g-700); padding:0 4px}
@@ -148,6 +151,8 @@
     thead th[data-bank="b365free"]{background:var(--b365); color:#fff; border-bottom-color:#2caea2; box-shadow:inset 0 -3px 0 #2caea2}
     thead th[data-bank="b365plus"]{background:var(--b365plus); color:#fff; border-bottom-color:#2caea2; box-shadow:inset 0 -3px 0 #2caea2}
     thead th[data-bank="tatrabanka"]{background:var(--tatrabanka)}
+    thead th[data-bank="jt"]{background:var(--jt)}
+    thead th[data-bank="fio"]{background:var(--fio)}
 
     tbody td,tbody th{padding:12px; border-bottom:1px solid var(--g-300); vertical-align:top; font-size:14px; background:#fff}
     tbody tr:nth-child(even) td,tbody tr:nth-child(even) th{background:var(--g-100)}
@@ -169,6 +174,8 @@
     td[data-bank="b365free"]{background:rgba(var(--b365-rgb),.05)}
     td[data-bank="b365plus"]{background:rgba(var(--b365plus-rgb),.05)}
     td[data-bank="tatrabanka"]{background:rgba(var(--tatrabanka-rgb),.05)}
+    td[data-bank="jt"]{background:rgba(var(--jt-rgb),.05)}
+    td[data-bank="fio"]{background:rgba(var(--fio-rgb),.05)}
 
     [data-visible="false"]{display:none}
 
@@ -376,7 +383,9 @@
         b365:{id:'b365', name:'365.banka', shortName:'365.bank', color:'var(--b365)'},
         b365free:{id:'b365free', name:'365.banka – účet zadarmo', shortName:'365 zadarmo', color:'var(--b365)'},
         b365plus:{id:'b365plus', name:'365.banka – účet plus', shortName:'365 plus', color:'var(--b365plus)'},
-        tatrabanka:{id:'tatrabanka', name:'Tatra banka', shortName:'Tatra banka', color:'var(--tatrabanka)'}
+        tatrabanka:{id:'tatrabanka', name:'Tatra banka', shortName:'Tatra banka', color:'var(--tatrabanka)'},
+        jt:{id:'jt', name:'J&T Banka', shortName:'J&T', color:'var(--jt)'},
+        fio:{id:'fio', name:'Fio banka', shortName:'FIO', color:'var(--fio)'}
       };
 
       const DEFAULT_PRODUCTS_CONFIG = {
@@ -581,7 +590,7 @@
           .filter(bank=>prod==='senior' ? bankHasProduct(bank.id,'senior') : bankHasProduct(bank.id, prod));
       }
       function getFamilyOrderIndex(familyId){
-        const order = ['accounts','loans','travel','campaigns'];
+        const order = ['accounts','loans','termDeposits','travel','campaigns'];
         const idx = order.indexOf(familyId);
         return idx === -1 ? order.length : idx;
       }
