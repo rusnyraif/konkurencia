@@ -215,8 +215,11 @@
     @page{size:A4 landscape; margin:12mm}
     @media print{
       header,.controls,.legend,.disclaimer{display:none!important}
+      .wrap{padding:0!important}
+      .workspace{width:100%!important; max-width:none!important; margin:0!important}
+      .table-card{width:100%!important; max-width:none!important}
       .table-card{border:none; box-shadow:none}
-      .table-scroll{overflow:visible}
+      .table-scroll{max-width:none!important; overflow:visible}
       table{min-width:auto; width:100%; border-collapse:collapse; table-layout:var(--print-table-layout)}
       caption{display:table-caption; caption-side:top; font-weight:900; margin-bottom:6px; text-align:left; color:#111}
       thead th{position:static!important; color:#111; background:#f2f2f2!important; border:1px solid #bbb}
@@ -824,27 +827,24 @@
       function updatePrintDensity(){
         const visibleCount = getBanks().filter(b=>b.id==='rb' || visibleBanks.get(b.id)!==false).length;
         const rootStyle = document.documentElement.style;
-        const defaultFeatureWidth = activeFamily==='travel' ? '220px' : '260px';
+        const printableWidth = 1020;
+        const baseFeatureWidth = activeFamily==='travel' ? 180 : activeFamily==='termDeposits' ? 190 : 220;
+        const featureWidth = visibleCount >= 10 ? 160 : visibleCount >= 8 ? 180 : baseFeatureWidth;
+        const bankWidth = Math.max(72, Math.floor((printableWidth - featureWidth) / Math.max(visibleCount, 1)));
         document.body.dataset.visibleBankCount = String(visibleCount);
-        document.body.dataset.printDensity = visibleCount >= 10 ? 'ultra' : visibleCount >= 8 ? 'compact' : 'normal';
-        if(visibleCount >= 10){
-          rootStyle.setProperty('--print-feature-w', '160px');
-          rootStyle.setProperty('--print-bank-w', '76px');
+        document.body.dataset.printDensity = bankWidth <= 80 ? 'ultra' : bankWidth <= 96 ? 'compact' : 'normal';
+        rootStyle.setProperty('--print-feature-w', `${featureWidth}px`);
+        rootStyle.setProperty('--print-bank-w', `${bankWidth}px`);
+        rootStyle.setProperty('--print-table-layout', 'fixed');
+        if(bankWidth <= 80){
           rootStyle.setProperty('--print-cell-font', '9px');
           rootStyle.setProperty('--print-cell-pad', '4px');
-          rootStyle.setProperty('--print-table-layout', 'fixed');
-        }else if(visibleCount >= 8){
-          rootStyle.setProperty('--print-feature-w', '180px');
-          rootStyle.setProperty('--print-bank-w', '88px');
+        }else if(bankWidth <= 96){
           rootStyle.setProperty('--print-cell-font', '10px');
           rootStyle.setProperty('--print-cell-pad', '5px');
-          rootStyle.setProperty('--print-table-layout', 'fixed');
         }else{
-          rootStyle.setProperty('--print-feature-w', defaultFeatureWidth);
-          rootStyle.setProperty('--print-bank-w', '148px');
           rootStyle.setProperty('--print-cell-font', '11px');
           rootStyle.setProperty('--print-cell-pad', '6px');
-          rootStyle.setProperty('--print-table-layout', 'auto');
         }
       }
       function syncBankVisibility(){
