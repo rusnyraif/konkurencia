@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prehľad konkurencie – RB prvá, úpravy tabuľky, pekná tlač</title>
+  <title>Prehlad konkurencie</title>
 
   <!-- Lokálny zdroj dát pre otvorenie priamo v prehliadači. -->
   <script src="./rb-konkurencia-data.js"></script>
@@ -72,6 +72,7 @@
     .wrap{padding:16px 16px 28px}
     .workspace{width:calc(100% - 32px); margin:0 auto}
     .disclaimer{display:flex; gap:10px; align-items:flex-start; background:#FFFBDB; border:1px solid #F1E28A; color:#2a2400; padding:10px 12px; border-radius:10px; margin:0 0 12px 0}
+    .disclaimer[hidden]{display:none!important}
     .disclaimer b{font-weight:900}
 
     .controls{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; margin:0 0 12px 0}
@@ -88,6 +89,9 @@
     .status-dot[data-state="error"]{background:#e74c3c}
 
     .chip{display:inline-flex; align-items:center; justify-content:center; width:132px; border:1px solid var(--g-300); background:var(--g-100); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; text-align:center; cursor:pointer; user-select:none; transition:background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition)}
+    .chip[draggable="true"]{cursor:grab}
+    .chip.dragging{opacity:.55; cursor:grabbing}
+    .chip.drop-target{box-shadow:0 0 0 2px #111 inset}
     .chip[data-active="true"]{box-shadow:0 0 0 2px currentColor inset; color:#111}
     .chip[aria-disabled="true"]{cursor:not-allowed; opacity:.85}
     .chip[data-bank="rb"]{background:var(--rb-yellow); border-color:#d8c000}
@@ -278,12 +282,9 @@
         </div>
       </div>
 
-      <div class="disclaimer">
+      <div class="disclaimer" id="disclaimerBox" hidden>
         <div style="font-size:18px">ℹ️</div>
-        <div id="disclaimerText">
-          <b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená.
-          „Senior“ zobrazí len banky, ktoré majú tento variant účtu dostupný.
-        </div>
+        <div id="disclaimerText"></div>
       </div>
 
       <div class="controls" id="controls">
@@ -362,7 +363,7 @@
             <h4>Zaujímavosti</h4>
             <ul id="modalZauj"></ul>
           </div>
-          <div>
+          <div id="modalCampaignsSection" hidden>
             <h4>Aktuálne kampane</h4>
             <ul id="modalKampane"></ul>
           </div>
@@ -397,7 +398,7 @@
           title:'Účty a poplatky',
           hint:'Porovnanie osobných účtov a ich variantov v jednej tabuľke.',
           badge:'Rodina: Účty',
-          disclaimer:'<b>Interná pomôcka pre pobočky.</b> RB je vždy zobrazená a zvýraznená. „Senior“ zobrazí len banky, ktoré majú tento variant účtu dostupný.',
+          disclaimer:'',
           productLabel:'Produkt',
           searchPlaceholder:'napr. výber, SMS, zahraničí…',
           bankIds:['rb','slsp','vub','csob','unicredit','mbank','prima','postova','b365free','b365plus'],
@@ -511,11 +512,14 @@
 
       const BUNDLED_SOURCE = window.RB_KONKURENCIA_DATA || null;
       let productsConfig = deepClone(DEFAULT_PRODUCTS_CONFIG);
+      const defaultBankOrderByFamily = {};
       let activeFamily = Object.keys(productsConfig)[0];
       const selectedVariantByFamily = {};
       const visibleRowsByFamily = {};
       const datasets = {};
       const bankInfoByProduct = {};
+      let draggedBankId = null;
+      let suppressChipToggleUntil = 0;
 
       // UI refs
       const table = document.getElementById('bankTable');
@@ -542,11 +546,13 @@
       const viewTitle = document.getElementById('viewTitle');
       const viewHint = document.getElementById('viewHint');
       const disclaimerText = document.getElementById('disclaimerText');
+      const disclaimerBox = document.getElementById('disclaimerBox');
 
       const infoModal = document.getElementById('infoModal');
       const modalHead = document.getElementById('modalHead');
       const modalTitle = document.getElementById('modalTitle');
       const modalZauj = document.getElementById('modalZauj');
+      const modalCampaignsSection = document.getElementById('modalCampaignsSection');
       const modalKampane = document.getElementById('modalKampane');
       const modalClose = document.getElementById('modalClose');
 
@@ -610,6 +616,7 @@
         viewTitle.textContent = config.title;
         viewHint.textContent = config.hint;
         disclaimerText.innerHTML = config.disclaimer;
+        disclaimerBox.hidden = !String(config.disclaimer || '').trim();
         productLabel.textContent = config.productLabel;
         rowSearch.placeholder = config.searchPlaceholder;
       }
@@ -789,13 +796,43 @@
           chip.dataset.bank=b.id;
           chip.dataset.active = String(visibleBanks.get(b.id)!==false);
           chip.textContent = b.id==='rb' ? 'RB' : b.name;
+          chip.title = b.id==='rb' ? 'RB ostáva zvýraznená' : 'Klik skryje banku, potiahnutie zmení poradie';
           if(b.id==='rb'){
             chip.setAttribute('aria-disabled','true');
           }else{
+            chip.draggable = true;
             chip.addEventListener('click', ()=>{
+              if(Date.now() < suppressChipToggleUntil) return;
               const cur = visibleBanks.get(b.id)!==false;
               visibleBanks.set(b.id, !cur);
               syncBankVisibility();
+            });
+            chip.addEventListener('dragstart', (event)=>{
+              draggedBankId = b.id;
+              chip.classList.add('dragging');
+              if(event.dataTransfer){
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', b.id);
+              }
+            });
+            chip.addEventListener('dragover', (event)=>{
+              if(!draggedBankId || draggedBankId===b.id) return;
+              event.preventDefault();
+              chip.classList.add('drop-target');
+            });
+            chip.addEventListener('dragleave', ()=>{
+              chip.classList.remove('drop-target');
+            });
+            chip.addEventListener('drop', (event)=>{
+              if(!draggedBankId || draggedBankId===b.id) return;
+              event.preventDefault();
+              chip.classList.remove('drop-target');
+              moveBankOrder(activeFamily, draggedBankId, b.id);
+              suppressChipToggleUntil = Date.now() + 250;
+            });
+            chip.addEventListener('dragend', ()=>{
+              draggedBankId = null;
+              chipsWrap.querySelectorAll('.chip').forEach(node=>node.classList.remove('dragging','drop-target'));
             });
           }
           chipsWrap.appendChild(chip);
@@ -898,6 +935,7 @@
         modalHead.style.color = id==='rb' ? '#111' : '#fff';
         modalZauj.innerHTML = info.zauj.length ? info.zauj.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
         if(activeFamily === 'campaigns'){
+          modalCampaignsSection.hidden = false;
           const campaignFamilies = [
             {familyId:'accounts', label:'Účty'},
             {familyId:'loans', label:'Pôžičky'},
@@ -911,7 +949,8 @@
           }).filter(Boolean);
           modalKampane.innerHTML = parts.length ? parts.join('') : '<li>—</li>';
         }else{
-          modalKampane.innerHTML = info.kampane.length ? info.kampane.map(s=>`<li>${s}</li>`).join('') : '<li>—</li>';
+          modalCampaignsSection.hidden = true;
+          modalKampane.innerHTML = '';
         }
         infoModal.setAttribute('open','');
       }
@@ -969,6 +1008,7 @@
       resetBtn.addEventListener('click', ()=>{
         Object.keys(BANK_META).forEach(id=>visibleBanks.set(id,true));
         Object.keys(productsConfig).forEach(familyId=>{
+          if(defaultBankOrderByFamily[familyId]) productsConfig[familyId].bankIds = defaultBankOrderByFamily[familyId].slice();
           productsConfig[familyId].features.forEach(feature=>visibleRowsByFamily[familyId].set(feature.key,true));
           selectedVariantByFamily[familyId] = productsConfig[familyId].defaultVariant;
         });
@@ -991,6 +1031,26 @@
           });
           if(!selectedVariantByFamily[familyId]) selectedVariantByFamily[familyId] = nextProductsConfig[familyId].defaultVariant;
         });
+      }
+      function captureDefaultBankOrder(nextProductsConfig){
+        Object.keys(defaultBankOrderByFamily).forEach(key=>delete defaultBankOrderByFamily[key]);
+        Object.keys(nextProductsConfig).forEach(familyId=>{
+          defaultBankOrderByFamily[familyId] = (nextProductsConfig[familyId].bankIds || []).slice();
+        });
+      }
+      function moveBankOrder(familyId, draggedId, targetId){
+        const config = productsConfig[familyId];
+        if(!config || !draggedId || !targetId || draggedId===targetId) return;
+        if(draggedId==='rb' || targetId==='rb') return;
+        const nextOrder = config.bankIds.slice();
+        const draggedIndex = nextOrder.indexOf(draggedId);
+        const targetIndex = nextOrder.indexOf(targetId);
+        if(draggedIndex===-1 || targetIndex===-1) return;
+        nextOrder.splice(draggedIndex, 1);
+        const insertIndex = nextOrder.indexOf(targetId);
+        nextOrder.splice(insertIndex, 0, draggedId);
+        config.bankIds = nextOrder;
+        renderAll();
       }
       function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
       function mergeData(defs, inc){ const out=deepClone(defs); for(const b in inc){ out[b]=out[b]||{}; for(const k in inc[b]) out[b][k]=inc[b][k]; } return out; }
@@ -1087,6 +1147,7 @@
             productsConfig[familyId] = Object.assign({}, productsConfig[familyId] || {}, deepClone(source.products[familyId]));
           });
         }
+        captureDefaultBankOrder(productsConfig);
         initializeFamilyState(productsConfig);
 
         const datasetKeys = [...new Set(Object.values(productsConfig).flatMap(config=>config.variants.map(variant=>variant.dataKey)))];
