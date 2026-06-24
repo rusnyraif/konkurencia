@@ -209,6 +209,7 @@
     .modal-campaign-section h5{margin:0 0 6px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--family-accent, var(--g-700))}
     .modal-campaign-section ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px}
     .close{background:#fff; border:1px solid var(--g-300); border-radius:8px; padding:6px 10px; font-weight:800; cursor:pointer}
+    .print-note{display:none}
 
     /* Panel „Vlastný produkt“ */
     dialog#customPanel{border:none; padding:0; width:min(700px,100%); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -236,6 +237,7 @@
       .feature-col,.rb-sticky{position:static!important; left:auto!important}
       .feature-col{width:var(--print-feature-w)!important; min-width:var(--print-feature-w)!important; max-width:var(--print-feature-w)!important}
       td.rb-featured{border-left:1px solid #bbb!important; background:#fff!important}
+      .print-note{display:block; margin:8px 0 10px; font-size:10px; line-height:1.35; color:#555}
       tr,td,th{break-inside:avoid}
     }
 
@@ -346,6 +348,7 @@
           </table>
           <div id="campaignGrid" class="campaign-grid" aria-label="Prehľad kampaní"></div>
         </div>
+        <div class="print-note">Poznámka: Údaje majú informatívny charakter, môžu sa priebežne meniť a nenahrádzajú aktuálny sadzobník ani obchodné podmienky banky.</div>
       </div>
     </div>
   </main>
@@ -436,7 +439,7 @@
           disclaimer:'<b>Interná pomôcka pre pobočky.</b> Cestovné poistenie je vedené ako samostatná produktová rodina. Zobrazené sú len banky, pre ktoré sú momentálne dostupné porovnateľné údaje.',
           productLabel:'Variant',
           searchPlaceholder:'napr. batožina, storno, liečebné náklady…',
-          bankIds:['vub','slsp','csob','tatrabanka'],
+          bankIds:['rb','vub','slsp','csob','tatrabanka'],
           features:[
             {key:'annual_premium', label:'Ročné poistné'},
             {key:'medical_expenses', label:'Poistenie liečebných nákladov'},

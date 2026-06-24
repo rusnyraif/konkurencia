@@ -76,6 +76,7 @@ window.RB_KONKURENCIA_DATA = {
       "supportsCustomRows": false,
       "defaultVariant": "standard",
       "bankIds": [
+        "rb",
         "slsp",
         "vub",
         "tatrabanka",
@@ -457,6 +458,22 @@ window.RB_KONKURENCIA_DATA = {
     }
   },
   "travel": {
+    "rb": {
+      "annual_premium": "55,20 €",
+      "medical_expenses": "250 000 €",
+      "liability": "65 000 € / 32 500 €",
+      "dental_treatment": "500 € / poistná udalosť",
+      "baggage_total_single": "3 000 € / 1 000 €",
+      "documents_loss": "500 €",
+      "baggage_delay_flight": "300 €",
+      "baggage_loss_flight": "1 000 €",
+      "flight_delay_cancel": "300 €",
+      "mountain_rescue_sr": "10 000 €",
+      "trip_cancellation": "200 € / osoba, spoluúčasť 15 %",
+      "vehicle_assistance": "300 €",
+      "accident_death_disability": "20 000 € / 40 000 €",
+      "max_age_limit": "bez limitu"
+    },
     "vub": {
       "annual_premium": "35 eur",
       "medical_expenses": "250 000",
@@ -523,6 +540,11 @@ window.RB_KONKURENCIA_DATA = {
     }
   },
   "termDeposits": {
+    "rb": {
+      "term_12m": "2,50 %",
+      "term_24m": "2,50 %",
+      "term_36m": "2,50 %"
+    },
     "slsp": {
       "term_12m": "2,30 %",
       "term_24m": "2,50 %",
@@ -726,6 +748,13 @@ window.RB_KONKURENCIA_DATA = {
     }
   },
   "travelBankInfo": {
+    "rb": {
+      "zauj": [
+        "Ročné poistné je 55,20 € a vekový limit je bez limitu.",
+        "Najsilnejšie je krytie batožiny, storna a technickej asistencie v súlade s dodaným podkladom."
+      ],
+      "kampane": []
+    },
     "vub": {
       "zauj": [
         "Najnižšie ročné poistné v dodanom porovnaní.",
@@ -758,6 +787,12 @@ window.RB_KONKURENCIA_DATA = {
     }
   },
   "termDepositsBankInfo": {
+    "rb": {
+      "zauj": [
+        "Na 1-, 2- aj 3-ročnej viazanosti má RB sadzbu 2,50 %."
+      ],
+      "kampane": []
+    },
     "slsp": {
       "zauj": [
         "Aktualizácia sadzieb podľa podkladu 06/2026.",
@@ -781,10 +816,10 @@ window.RB_KONKURENCIA_DATA = {
     },
     "prima": {
       "zauj": [
-        "Postupný rast sadzby od 1,60 % do 2,00 % pri dlhšej viazanosti."
+        "Postupný rast sadzby od 1,60 % do 2,00 % pri dlhšej viazanosti.",
+        "S účtom sú sadzby o 1 % vyššie."
       ],
       "kampane": [
-        "S účtom sú sadzby o 1 % vyššie."
       ]
     },
     "b365": {
